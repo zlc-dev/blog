@@ -2,7 +2,6 @@ import { SITE_CONFIG } from "./site_config";
 
 export function joinPath(...parts: string[]): string {
     return (
-        "/" +
         parts
             .filter(Boolean)
             .map(p => p.replace(/^\/+|\/+$/g, ""))
@@ -11,7 +10,7 @@ export function joinPath(...parts: string[]): string {
 }
 
 export function getRelativePath(path: string): string {
-    return joinPath(SITE_CONFIG.base, path);
+    return "/" +joinPath(SITE_CONFIG.base, path);
 }
 
 export function getAbsolutePath(path: string): string {
