@@ -63,7 +63,7 @@ const next_post = posts[cur_post_idx + 1];
                 <div class="post-details">
                     <div class="post-info">
                         <div>{page.data.title}</div>
-                        <div>{new URL(`posts/${page.id}`, SITE_CONFIG.site + SITE_CONFIG.base)}</div>
+                        <div>{new URL(`posts/${page.id}`, Astro.site)}</div>
                     </div>
                     <div class="post-meta">
                         <div class="post-meta-item">
