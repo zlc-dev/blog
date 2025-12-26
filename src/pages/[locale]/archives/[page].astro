@@ -9,6 +9,7 @@ import Header from "../../../components/Header.astro";
 import Pagination from "../../../components/Pagination.astro";
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
+import { getRelativePath } from "../../../utils";
 
 export const getStaticPaths = (async ({ paginate }) => {
     const posts = (await getCollection("posts")).sort((a, b) => (b.data.published.getTime() - a.data.published.getTime()));
@@ -35,8 +36,8 @@ const grouped_page = page.data.reduce<Map<number, CollectionEntry<"posts">[]>>((
 <html lang={locale} data-theme="light">
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="stylesheet" href="/theme/global.css">
+    <link rel="icon" type="image/svg+xml" href={getRelativePath("/favicon.svg")} />
+    <link rel="stylesheet" href={getRelativePath("/theme/global.css")}>
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{i18n(locale, I18nKey.site_name)}</title>

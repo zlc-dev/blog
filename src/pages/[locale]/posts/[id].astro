@@ -11,6 +11,7 @@ import Giscus from "../../../components/Giscus.astro";
 import { getRelativeLocaleUrl } from "astro/virtual-modules/i18n.js";
 import Icon from "heroicons-astro/Heroicon.astro";
 import { SITE_CONFIG } from "../../../site_config.ts"
+import { getRelativePath } from "../../../utils";
 
 export const getStaticPaths = (async () => {
     const posts = await getCollection("posts");
@@ -41,8 +42,8 @@ const next_post = posts[cur_post_idx + 1];
 <html lang={locale} data-theme="light">
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="stylesheet" href="/theme/global.css">
+    <link rel="icon" type="image/svg+xml" href={getRelativePath("/favicon.svg")} />
+    <link rel="stylesheet" href={getRelativePath("/theme/global.css")}>
     <meta name="viewport" content="width=device-width" />
     <meta property="og:title" content={page.id} />
     <title>{ `${page.data.title} - ${i18n(locale, I18nKey.site_name)}` }</title>
