@@ -1,0 +1,130 @@
+---
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { DEFAULT_LANGUAGE, type SupportedLanguages } from "../i18n_config.ts";
+import type { CollectionEntry } from "astro:content";
+import { getSummary } from "../utils/summary";
+
+interface Props {
+    posts: CollectionEntry<"posts">[];
+    locale?: SupportedLanguages;
+}
+
+const posts = Astro.props.posts;
+const locale = Astro.props.locale ?? DEFAULT_LANGUAGE;
+---
+<body>
+    <ul class="post-list">{posts.map(post => (
+        <li class="post-card">
+            <div >
+                <a href={getRelativeLocaleUrl(locale, `posts/${post.id}`)}>
+                    <h1 class="post-title">{post.data.title}</h1>
+                </a>
+                <div style="margin: 1em 0;">
+                    <a href={getRelativeLocaleUrl(locale, `posts/${post.id}`)}>
+                        <span class="post-snippet">{ post.data.summary ?? getSummary(post.body?.slice(0, 500) ?? "", 200) }</span>
+                    </a>
+                </div>
+
+                <div class="post-meta">
+                    <time class="post-date" datetime={post.data.published.toISOString()}>
+                        {post.data.published.toLocaleDateString()}
+                    </time>
+
+                    {post.data.tags.length > 0 && (
+                        <ul class="post-tags">
+                        {post.data.tags.map(tag => (
+                            <li class="post-tag"><a >#{tag}</a></li>
+                        ))}
+                        </ul>
+                    )}
+                </div>
+            </div>
+        </li>
+    ))}</ul>
+</body>
+<style>
+
+.post-list {
+    padding: 0;
+    width: 100%;
+    margin-top: 3em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 3em;
+}
+
+.post-list li {
+    list-style: none;
+}
+
+.post-card {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    color: var(--color-text-primary);
+}
+
+.post-card a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.post-title {
+    width: fit-content;
+    margin: 0 0 0.75rem 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: inherit;
+}
+
+.post-title:hover {
+    color: var(--color-accent);
+}
+
+.post-snippet {
+    color: inherit;
+}
+
+.post-snippet:hover {
+    color: var(--color-accent);
+}
+
+.post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+}
+
+.post-date {
+    white-space: nowrap;
+}
+
+.post-tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+}
+
+.post-tag {
+    padding: 0.125rem 0.5rem;
+
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.post-tag:hover {
+    color: var(--color-accent);
+}
+
+</style>

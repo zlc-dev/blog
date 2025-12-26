@@ -1,0 +1,108 @@
+---
+import type { Page } from 'astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { DEFAULT_LANGUAGE } from '../i18n_config.ts';
+import Icon from "heroicons-astro/Heroicon.astro";
+
+interface Props {
+    page: Page<any>;
+    href_fn: (index: number) => string;
+    locale?: string;
+};
+
+const { page, href_fn, locale: locale_ } = Astro.props;
+const locale = locale_ ?? DEFAULT_LANGUAGE;
+
+function neighbour_pages(n: number): (number | "ellipsis") [] {
+    const res: (number | "ellipsis")[] = [];
+    const cur = page.currentPage;
+    const last = page.lastPage;
+
+    if (cur - n > 1) {
+        res.push(1);
+        if (cur - n > 2) res.push("ellipsis");
+    }
+
+    for (let i = Math.max(1, cur - n); i <= Math.min(last, cur + n); ++i) {
+        res.push(i);
+    }
+
+    if (cur + n < last) {
+        if (cur + n < last - 1) res.push("ellipsis");
+        res.push(last);
+    }
+
+    return res;
+}
+
+const pagination = neighbour_pages(1);
+
+---
+
+<div class="pagination">
+{
+    <nav>
+    <a href={page.url.prev ?? "#"} class:list={["page-link", { disable: !page.url.prev}]}>
+        <div style="width: 1rem;">
+            <Icon iconCode="chevron-left"/>
+        </div>
+    </a>
+
+    {pagination.map((num) => (num === "ellipsis"? (<span>...</span>) :
+        <a
+        class={`page-link ${num === page.currentPage ? "active" : ""}`}
+        href={getRelativeLocaleUrl(locale, href_fn(num))}
+        >
+        {num}
+        </a>
+    ))}
+
+    <a href={page.url.next ?? "#"} class:list={["page-link", { disable: !page.url.next}]}>
+        <div style="width: 1rem;">
+            <Icon iconCode="chevron-right"/>
+        </div>
+    </a>
+    </nav>
+}
+</div>
+
+<style>
+    
+
+.pagination {
+    min-width: none;
+    display: block;
+    padding-top: 5rem;
+    margin-top: auto;
+    margin-bottom: 5rem;
+}
+
+.pagination nav {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.page-link {
+    padding: 6px 8px;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    font-size: 1rem;
+}
+
+.page-link:hover {
+    color: var(--color-accent);
+}
+
+.page-link.active {
+    font-weight: bold;
+    background: var(--color-activated);
+}
+
+.page-link.disable {
+    color: var(--color-disabled);
+    pointer-events: none;
+}
+
+
+</style>

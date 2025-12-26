@@ -1,0 +1,269 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, render } from "astro:content";
+import { i18n } from "../../../i18n/localization";
+import I18nKey from "../../../i18n/i18nKey";
+import MenuBar from "../../../components/MenuBar.astro";
+import Header from "../../../components/Header.astro";
+import PageNav from "../../../components/PageNav.astro";
+import { SUPPORTED_LANGUAGES } from "../../../i18n_config.ts";
+import Giscus from "../../../components/Giscus.astro";
+import { getRelativeLocaleUrl } from "astro/virtual-modules/i18n.js";
+import Icon from "heroicons-astro/Heroicon.astro";
+import { SITE_CONFIG } from "../../../site_config.ts"
+
+export const getStaticPaths = (async () => {
+    const posts = await getCollection("posts");
+    return SUPPORTED_LANGUAGES.flatMap(locale => posts.map(post => ({
+        params: { locale, id: post.id }, 
+        props: { page: post } 
+    })));
+}) satisfies GetStaticPaths;
+
+const { locale } = Astro.params;
+const { page } = Astro.props;
+const { Content, headings } = await render(page);
+
+const posts = (await getCollection("posts")).sort((a, b) => (b.data.published.getTime() - a.data.published.getTime()));
+const cur_post_idx = (() => {
+    for (let i: number = 0; i < posts.length; ++i) {
+        if (posts[i].id == page.id) {
+            return i;
+        }
+    }
+    return -1;
+})();
+
+const prev_post = posts[cur_post_idx - 1];
+const next_post = posts[cur_post_idx + 1];
+
+---
+<html lang={locale} data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/theme/global.css">
+    <meta name="viewport" content="width=device-width" />
+    <meta property="og:title" content={page.id} />
+    <title>{ `${page.data.title} - ${i18n(locale, I18nKey.site_name)}` }</title>
+</head>
+
+<body>
+    <Header title={ page.data.title } banner_height={60} />
+    <MenuBar locale={ locale } inheader={true}/>
+    <div class="container">
+        <div class="md-container">
+            <div class="md-placeholder"></div>
+            <div class="md-content">
+                <div id="md-reading-observer" style="position: sticky; top: 0; width: 0; height: 0;"/>
+                <div data-pagefind-body class="md-body">
+                    <Content/>
+                </div>
+                <div class="post-details">
+                    <div class="post-info">
+                        <div>{page.data.title}</div>
+                        <div>{new URL(`posts/${page.id}`, SITE_CONFIG.site + SITE_CONFIG.base)}</div>
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-meta-item">
+                            <div>{i18n(locale, I18nKey.author)}</div>
+                            <div>{page.data.author}</div>
+                        </div>
+
+                        <div class="post-meta-item">
+                            <div>{i18n(locale, I18nKey.publication_date)}</div>
+                            <div>{page.data.published.toLocaleDateString()}</div>
+                        </div>
+
+                        <div class="post-meta-item">
+                            <div>{i18n(locale, I18nKey.license)}</div>
+                            <div>{page.data.license}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="post-prevnext">
+                {prev_post && (
+                    <div class="post-prev">
+                    <a
+                        href={getRelativeLocaleUrl(locale, `posts/${prev_post.id}`)}
+                        class="post-link"
+                    >
+                        <span style="width: 1.5rem;"><Icon iconCode="chevron-left" iconStyle="outline"/></span>
+                        <span class="post-link-text">{prev_post.data.title}</span>
+                    </a>
+                    </div>
+                )}
+
+                {next_post && (
+                    <div class="post-next">
+                    <a
+                        href={getRelativeLocaleUrl(locale, `posts/${next_post.id}`)}
+                        class="post-link"
+                    >
+                        <span class="post-link-text">{next_post.data.title}</span>
+                        <span style="width: 1.5rem;"><Icon iconCode="chevron-right" iconStyle="outline"/></span>
+                    </a>
+                    </div>
+                )}
+                </div>
+                <div class="md-discussion">
+                    <Giscus
+                        data_repo={SITE_CONFIG.giscus.data_repo}
+                        data_repo_id={SITE_CONFIG.giscus.data_repo_id}
+                        data_category={SITE_CONFIG.giscus.data_category}
+                        data_category_id={SITE_CONFIG.giscus.data_category_id}
+                        theme_path="light"
+                        locale={locale}
+                    />
+                </div>
+            </div>
+            <div class="md-placeholder">
+                <div style="position: sticky; top: 4rem; margin-top: var(--banner-offset); display: flex; justify-content: right;">
+                    <PageNav locale={locale} headings={headings} reading_obersver="#md-reading-observer"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+
+body {
+    margin: 0;
+}
+
+.container {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+
+.md-container {
+    width: 100%;
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+}
+
+.md-placeholder {
+    flex: 0 1 15%;
+}
+
+.md-content {
+    position: relative;
+    flex: 0 1 50%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-surface);
+    margin-top: -5vh;
+    border-radius: 5px;
+    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
+}
+
+.md-body {
+    width: 90%;
+    align-self: center;
+}
+
+:global(.md-body img) {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.md-discussion {
+    margin: 5rem 0;
+    width: 90%;
+    align-self: center;
+}
+
+.post-details {
+    margin: 1rem 4rem;
+    background-color: var(--color-bg-dialog);
+    overflow: hidden;
+}
+
+.post-info {
+    width: 100%;
+    margin: 1rem 1rem;
+}
+
+.post-info div:nth-child(1) {
+    font-size: x-large;
+}
+
+.post-info div:nth-child(2) {
+    font-size: large;
+    color: var(--color-text-muted);
+}
+
+.post-meta {
+    display: flex;
+    justify-content: flex-start;
+    gap: 1rem;
+    margin: 1rem 1rem;
+}
+
+.post-meta .post-meta-item {
+}
+
+.post-meta .post-meta-item div:nth-child(1)  {
+    font-size: large;
+}
+
+.post-meta .post-meta-item div:nth-child(2)  {
+    font-size: large;
+    color: var(--color-text-muted)
+}
+
+.post-prevnext {
+    display: flex;
+    margin: 2rem 4rem;
+}
+
+.post-prev, .post-next {
+    max-width: 45%;
+    flex-grow: 1;
+}
+
+.post-prev {
+    margin-right: auto;
+    text-align: left;
+}
+
+.post-next {
+    margin-left: auto;
+    text-align: right;
+}
+
+.post-link {
+    display: flex;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    transition: color 0.2s;
+}
+
+.post-link:hover {
+    color: var(--color-accent);
+}
+
+.post-link-text {
+    flex-grow: 1;
+}
+
+@media (max-aspect-ratio: 3/4) , (max-width: 768px) {
+    .md-placeholder {
+        display: none;
+    }
+
+    .md-content {
+        flex-grow: 1;
+    }
+
+}
+
+</style>
+
+</html>

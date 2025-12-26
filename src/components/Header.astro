@@ -1,0 +1,141 @@
+---
+interface Props {
+    banner_height?: number; // vh
+    title: string;
+}
+
+const banner_height = Astro.props.banner_height ?? 100;
+const bannerHeight = `${banner_height}vh`;
+const title = Astro.props.title;
+
+---
+<body>
+    <header>
+        <div class="header-inner">
+            <div class="banner banner-offset">
+                <h1 data-pagefind-body class="banner-center">
+                    {title}
+                </h1>
+                <div class="banner-credit" >© Bing</div>
+            </div>
+        </div>
+    </header>
+</body>
+
+<style define:vars={{bannerHeight}}>
+
+:global(:root) {
+    --banner-offset: 0vh;
+}
+
+body {
+    margin: 0;
+    background-color: var(--color-bg-page);
+    min-height: calc(100vh - var(--bannerHeight));
+}
+
+.header-inner {
+    position: relative;
+    height: var(--bannerHeight);
+    width: 100%;
+}
+
+.banner {
+    position: relative;
+    z-index: -1;
+    height: inherit;
+    width: inherit;
+    background-image: url("https://bing.img.run/1920x1080.php");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+
+    transform: translateY(var(--banner-offset));
+    will-change: transform;
+}
+
+.banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #999;
+  mix-blend-mode: multiply;
+  z-index: 0;
+}
+
+.banner-center {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 600;
+    color: var(--color-banner-text);
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+
+.banner-credit {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    font-size: 0.75rem;
+    color: var(--color-banner-text);
+    text-shadow: 0 1px 4px rgba(0,0,0,.5);
+}
+
+@media (max-aspect-ratio: 3/4) , (max-width: 768px) {
+    .md-placeholder {
+        display: none;
+    }
+}
+
+</style>
+
+<script is:inline>
+    const MAX_OFFSET = 20;
+    const SPEED = 0.02;
+
+    let ticking = false;
+
+    function update() {
+        const scrollY = window.scrollY;
+
+        const offset = Math.min(scrollY * SPEED, MAX_OFFSET);
+        document.documentElement.style.setProperty('--banner-offset', `${offset}vh`);
+    }
+
+    update();
+
+    window.addEventListener(
+        "load",
+        () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    update();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        },
+        { passive: true }
+    );
+
+    window.addEventListener(
+        "scroll",
+        () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    update();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        },
+        { passive: true }
+    );
+</script>

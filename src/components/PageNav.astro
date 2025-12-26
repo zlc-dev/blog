@@ -1,0 +1,157 @@
+---
+import type { MarkdownHeading } from 'astro'
+import { i18n } from '../i18n/localization';
+import { DEFAULT_LANGUAGE, type SupportedLanguages } from '../i18n_config.ts';
+import I18nKey from '../i18n/i18nKey';
+
+
+interface Props {
+    locale?: SupportedLanguages;
+    reading_obersver?: string;
+    headings: MarkdownHeading[];
+}
+
+const { locale, reading_obersver, headings } = Astro.props;
+
+---
+
+<div class="md-navigator" data-reading-obersver={reading_obersver}>
+    <h1 style="color: var(--color-text-muted);">
+        { i18n(locale ?? DEFAULT_LANGUAGE, I18nKey.contents) }
+    </h1>
+    <ul>{headings.filter(h => (h.depth <= 2)).map(h => (
+        <li id={`nav-${h.slug}`} class={`depth-${h.depth}`}>
+            <a href={`#${h.slug}`}>{h.text}</a>
+        </li>
+    ))}</ul>
+</div>
+<style>
+
+.md-navigator {
+    font-size: 0.9em;
+    line-height: 1.5;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    margin-left: 1.5em;
+    padding-left: 0.75em;
+}
+
+.md-navigator ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.md-navigator li {
+    margin: 0.2rem 1rem;
+}
+
+.md-navigator a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    display: block;
+    padding: 0.15rem 0;
+}
+
+.md-navigator a:hover {
+    color:  var(--color-selected);
+}
+
+.md-navigator .depth-1 {
+    font-weight: 600;
+}
+
+.md-navigator .depth-2 {
+    padding-left: 0.75rem;
+}
+
+.md-navigator li[aria-current] a {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+</style>
+
+<script>
+
+type HeadingEl = HTMLHeadingElement;
+type TocListItemEl = HTMLLIElement;
+type DivEl = HTMLDivElement;
+
+const headings: HeadingEl[] = Array.from(
+    document.querySelectorAll<HeadingEl>(
+        '.md-content h1, .md-content h2'
+    )
+);
+
+const tocItems = new Map<string, TocListItemEl>();
+
+document.querySelectorAll<TocListItemEl>('.md-navigator li')
+    .forEach(a => {
+        const id = a.getAttribute('id')?.slice(4)
+        if (id) {
+            tocItems.set(id, a)
+        }
+    });
+
+
+function setActive(id: string) {
+    tocItems.values().filter(li => li.hasAttribute('aria-current')).forEach(li => {
+        li.removeAttribute('aria-current');
+    });
+
+    const active = tocItems.get(id);
+    if (!active) return;
+
+    active.setAttribute('aria-current', 'true');
+}
+
+const reading_obersver_selector = document.querySelector<DivEl>(".md-navigator")?.dataset.readingObersver;
+const reading_obersver: Element | null = document.querySelector<Element>(reading_obersver_selector ?? ".md-navigator");
+
+function updateActive() {
+    if (!reading_obersver) return;
+    const rtop = reading_obersver.getBoundingClientRect().top;
+    const rbottom = Math.min(rtop + 20, window.innerHeight);
+
+    let current: HTMLElement | null = null;
+    
+    // binary search
+    var i = 0, j = headings.length - 1;
+    while(i <= j) {
+        var m: number = Math.floor((i + j) / 2);
+        if (headings[m].getBoundingClientRect().bottom <= rtop) {
+            i = m + 1;
+        } else {
+            j = m - 1;
+        }
+    }
+
+    var hrect = headings.at(i)?.getBoundingClientRect();
+    if (hrect && rbottom >= hrect.top) {
+        current = headings[i];
+        setActive(current.id);
+    }
+}
+
+let ticking = false;
+
+function trafficLimitedUpdateActive() {
+    if (!ticking) {
+        window.requestAnimationFrame(() => {
+            updateActive();
+            ticking = false;
+        });
+        ticking = true;
+    }
+}
+
+window.addEventListener('load', updateActive);
+window.addEventListener('load', () => {
+    if (!headings.length) return;
+    setActive(headings[0].id);
+});
+window.addEventListener('scroll', trafficLimitedUpdateActive);
+window.addEventListener('resize', trafficLimitedUpdateActive);
+
+</script>

@@ -1,0 +1,419 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import I18nKey from "../i18n/i18nKey";
+import { DEFAULT_LANGUAGE, type SupportedLanguages } from "../i18n_config.ts";
+import { i18n } from "../i18n/localization";
+import Icon from "heroicons-astro/Heroicon.astro";
+import Dialog from "./Dialog.astro";
+import Search from "astro-pagefind/components/Search"
+
+interface MenuBarItem {
+    name: I18nKey;
+    link: string;
+}
+
+interface Props {
+    locale?: SupportedLanguages;
+    inheader?: boolean;
+}
+
+const locale = Astro.props.locale ?? DEFAULT_LANGUAGE;
+const inheader = Astro.props.inheader ?? false;
+
+const menu_bar_items: MenuBarItem[] = [
+    { name: I18nKey.home_page, link: getRelativeLocaleUrl(locale, "/") },
+    { name: I18nKey.archive_page, link: getRelativeLocaleUrl(locale, "/archives") },
+    { name: I18nKey.about_page, link: "https://github.com/zlc-dev" },
+];
+---
+<nav class="menu-bar" id="menu-bar" data-inheader={inheader}>
+    <div class="menu-bar-inner">
+        <div class="menu-bar-left">
+            <div class="menu-bar-site">
+                <a href={ getRelativeLocaleUrl(locale, "/")} class="site-name">
+                    {i18n(locale, I18nKey.site_name)}
+                </a>
+            </div>
+            <div class="menu-bar-nav-sm">
+                <div
+                    class="menu-toggle"
+                    aria-expanded="false"
+                    aria-label="Open menu"
+                >
+                    <Icon class="icon-bars-3" iconCode="menu" iconStyle="outline" />
+                </div>
+
+                <div class="menu-dropdown">
+                    {menu_bar_items.map(item => (
+                    <a href={item.link} class="menu-dropdown-item">
+                        {i18n(locale, item.name)}
+                    </a>
+                    ))}
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-bar-center">
+            <nav class="menu-bar-nav">
+            {menu_bar_items.map(item => (
+                <a class="menu-item" href={item.link}>
+                    {i18n(locale, item.name)}
+                </a>
+            ))}
+            </nav>
+        </div>
+
+        <div class="menu-bar-right">
+            <div class="menu-theme-toggle menu-theme-toggle-btn">
+                <div class="icon icon-sun">
+                    <Icon iconCode="sun" iconStyle="outline" />
+                </div>
+                <div class="icon icon-moon">
+                    <Icon iconCode="moon" iconStyle="outline" />
+                </div>
+            </div>
+            <div class="menu-search-button" style="width: 1.5rem;">
+                <Icon iconCode="search" iconStyle="outline" />
+            </div>
+        </div>
+    </div>
+</nav>
+
+<Dialog id="search-dialog">
+    <div style="max-height: 80vh; overflow-y: auto; overscroll-behavior: contain;">
+        <div style="padding: 0 1rem;">
+            <Search
+                id="search"
+                className="pagefind-ui"
+                uiOptions={{ showImages: false }}
+            />
+        </div>
+    </div>
+</Dialog>
+
+<style>
+    
+body {
+    margin: 0;
+}
+
+.menu-bar {
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 4rem;
+
+    background: var(--color-bg-surface);
+    color: var(--color-text-primary);
+
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+
+    transition: 
+        transform 0.25s ease,
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.menu-bar.hidden {
+    transform: translateY(-100%);
+}
+
+.menu-bar.at-top {
+    background: transparent;
+    color: var(--color-menu-text);
+    border-bottom: none;
+}
+
+.menu-bar-inner {
+    max-width: 1200px;
+    height: 100%;
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+}
+
+.menu-bar-left,
+.menu-bar-right {
+    flex: 0 0 30%;
+    display: flex;
+    align-items: center;
+}
+
+.menu-bar-right {
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+.menu-bar-center {
+    flex: 1;
+}
+
+.menu-bar-site { 
+    flex: 1;
+}
+
+.menu-bar-nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+}
+
+
+.menu-bar-search-sm { 
+    display: none; 
+}
+
+.menu-bar-nav-sm { 
+    display: none; 
+}
+
+.menu-bar-search { 
+    display: flex; 
+}
+
+.site-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: inherit;
+}
+
+.menu-item {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+}
+
+.menu-item::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.3rem;
+    height: 2px;
+    background: currentColor;
+    opacity: 0;
+    transform: scaleX(0);
+    transition: 0.2s ease;
+}
+
+.menu-item:hover::after {
+    opacity: 1;
+    transform: scaleX(1);
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    width: 1.5rem;
+    color: inherit;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.menu-theme-toggle {
+    width: 1.5rem;
+    cursor: pointer;
+    display: inline-grid;
+    place-items: center;
+}
+
+.menu-theme-toggle:hover {
+    color: var(--color-accent)
+}
+
+.menu-theme-toggle .icon {
+    width: 100%;
+    grid-area: 1 / 1;
+    font-size: 1.2rem;
+    line-height: 1;
+    transition: opacity 0.12s linear;
+}
+
+.menu-theme-toggle .icon {
+    opacity: 0;
+}
+
+:root[data-theme="light"] .menu-theme-toggle .icon.icon-sun {
+    opacity: 1;
+}
+
+:root[data-theme="dark"] .menu-theme-toggle .icon.icon-moon {
+    opacity: 1;
+}
+
+.menu-search-button {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.menu-search-button:hover {
+    color: var(--color-accent)
+}
+
+@media (max-aspect-ratio: 3/4) , (max-width: 768px) {
+    .menu-bar-site { display: none; }
+    .menu-bar-nav { display: none; }
+
+    .menu-bar-nav-sm { display: flex; align-items: center; }
+    .menu-bar-search { display: none; }
+    .menu-bar-center { display: none; }
+    .menu-bar-right { 
+        flex-grow: 1;
+        margin-right: 1rem;
+        justify-content: flex-end; 
+    }
+
+    .menu-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 1rem;
+        min-width: 10rem;
+        color: var(--color-text-primary);
+        background: var(--color-bg-surface);
+        border: 1px solid rgba(0,0,0,.12);
+        display: none;
+        flex-direction: column;
+    }
+
+    .menu-dropdown a {
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .menu-dropdown a:hover {
+        background: var(--color-selected);
+    }
+}
+
+</style>
+
+<style is:global>
+    .pagefind-ui {
+        --pagefind-ui-background: var(--color-bg-surface);
+        --pagefind-ui-text: var(--color-text-primary);
+        --pagefind-ui-border: var(--color-text-primary);
+        --pagefind-ui-border-width: 1px;
+        --pagefind-ui-border-radius: 0.25rem;
+    }
+    .pagefind-ui input:focus {
+        outline: 2px solid var(--color-accent);
+        outline-offset: -1px;
+        border-radius: 0.25rem;
+    }
+
+
+</style>
+
+<script is:inline>
+    (function() {
+        var theme = localStorage.getItem("theme");
+        if (!theme) {
+            theme = matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+        }
+        document.documentElement.dataset.theme = theme;
+        localStorage.setItem("theme", theme);
+    }())
+</script>
+
+<script>
+import { switchTheme } from "../theme.ts";
+
+const giscus: HTMLElement | null = document.querySelector("astro-giscus");
+
+document.querySelector<HTMLButtonElement>(".menu-theme-toggle-btn")?.addEventListener("click", () => {
+    switchTheme();
+    giscus?.dispatchEvent(new CustomEvent("giscus:theme-update"));
+});
+
+const search_dialog: HTMLElement | null = document.querySelector("#search-dialog");
+
+search_dialog?.setAttribute("hidden", "");
+
+document.querySelector(".menu-search-button")?.addEventListener(
+    "click", 
+    () => {
+        search_dialog?.removeAttribute("hidden");
+        document.body.style.overflow = "hidden";
+    }
+);
+
+search_dialog?.addEventListener("dialog:close", () => {
+    search_dialog?.setAttribute("hidden", "");
+    document.body.style.overflow = "";
+})
+
+let toggle: HTMLElement | null = document.querySelector(".menu-toggle");
+let dropdown: HTMLElement | null = document.querySelector(".menu-dropdown");
+
+toggle?.addEventListener("click", () => {
+    if (!toggle || !dropdown) return;
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!expanded));
+    dropdown.style.display = expanded ? "none" : "flex";
+});
+
+document.addEventListener("click", (e) => {
+    if (!toggle || !dropdown) return;
+    if (!toggle.contains(e.target as Node) && !dropdown.contains(e.target as Node)) {
+        toggle.setAttribute("aria-expanded", "false");
+        dropdown.style.display = "none";
+    }
+});
+
+const menu_bar: HTMLElement | null = document.getElementById("menu-bar");
+let lastScrollY = window.scrollY;
+
+const THRESHOLD = 8;
+
+window.addEventListener("scroll", () => {
+    const currentY = window.scrollY;
+
+    if (Math.abs(currentY - lastScrollY) < THRESHOLD) return;
+
+    if (currentY > lastScrollY && currentY > 64) {
+        menu_bar?.classList.add("hidden");
+    } else {
+        menu_bar?.classList.remove("hidden");
+    }
+
+    lastScrollY = currentY;
+});
+
+let ticking = false;
+
+function update() {
+    if(!menu_bar) return;
+    const isAtTop = window.scrollY <= THRESHOLD;
+
+    menu_bar.classList.toggle("at-top", isAtTop);
+
+    ticking = false;
+}
+
+if (menu_bar?.dataset.inheader === "true") {
+    update();
+    window.addEventListener(
+        "scroll",
+        () => {
+            if (!ticking) {
+                requestAnimationFrame(update);
+                ticking = true;
+            }
+        },
+        { passive: true }
+    );
+}
+</script>
