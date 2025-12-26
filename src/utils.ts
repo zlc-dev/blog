@@ -13,3 +13,7 @@ export function joinPath(...parts: string[]): string {
 export function getRelativePath(path: string): string {
     return joinPath(SITE_CONFIG.base, path);
 }
+
+export function getAbsolutePath(path: string): string {
+    return joinPath(SITE_CONFIG.site, getRelativePath(path));
+}
