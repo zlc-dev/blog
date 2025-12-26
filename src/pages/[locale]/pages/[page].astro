@@ -1,0 +1,76 @@
+---
+import { getCollection } from "astro:content"
+import type { GetStaticPaths } from "astro";
+import { SUPPORTED_LANGUAGES } from "../../../i18n_config.ts";
+import { i18n } from "../../../i18n/localization"
+import I18nKey from "../../../i18n/i18nKey"
+import MenuBar from "../../../components/MenuBar.astro";
+import Header from "../../../components/Header.astro";
+import PostList from "../../../components/PostList.astro";
+import Pagination from "../../../components/Pagination.astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+    const posts = (await getCollection("posts")).sort((a, b) => (b.data.published.getTime() - a.data.published.getTime()));
+    return SUPPORTED_LANGUAGES.flatMap(locale => paginate(posts, {
+		params: { locale },
+        pageSize: 8
+	}));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const { locale } = Astro.params;
+
+---
+
+<html lang={locale} data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/theme/global.css">
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{i18n(locale, I18nKey.site_name)}</title>
+</head>
+<body>
+
+    <Header title={i18n(locale, I18nKey.welcome)} data-pagefind-ignore/>
+    <MenuBar locale={locale} inheader={true} />
+    <section class="post-list-container">
+        <div style="width: 80%;">
+            <PostList locale={locale} posts={page.data}/>
+        </div>
+        <Pagination locale={locale} page={page} href_fn={(index) => (`/pages/${index}`)}/>
+    </section>
+</body>
+<style>
+body {
+    margin: 0;
+}
+
+.post-list-container {
+    min-width: 800px;
+    width: 40%;
+
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-bg-surface);
+    border-radius: 5px;
+    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-aspect-ratio: 3/4) , (max-width: 768px) {
+    .post-list-container {
+        width: 100%;
+        min-width: 0;
+        box-shadow: none;
+    }
+}
+
+
+</style>
+</html>

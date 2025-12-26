@@ -1,0 +1,15 @@
+---
+import type { GetStaticPaths } from "astro";
+import { SUPPORTED_LANGUAGES } from "../../../i18n_config.ts";
+import { getRelativeLocaleUrl } from "astro:i18n";
+export const getStaticPaths = (async () => {
+    return SUPPORTED_LANGUAGES.map(locale => ({
+		params: { locale }
+	}))
+}) satisfies GetStaticPaths;
+
+const { locale } = Astro.params;
+
+return Astro.rewrite(getRelativeLocaleUrl(locale, "archives/1"));
+
+---

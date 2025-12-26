@@ -1,0 +1,88 @@
+---
+import Icon from "heroicons-astro/Heroicon.astro";
+
+interface Props {
+    id?: string;
+    class?: string;
+};
+
+const { id, class: className } = Astro.props;
+
+---
+
+<astro-dialog id={id} class={className}>
+    <div class="dialog-overlay">
+        <div class="dialog-container">
+            <div class="dialog-content">
+                <div style="width: 100%; display: flex; justify-content: flex-end; margin-bottom: 0.75rem;">
+                    <div class="dialog-exit-button">
+                        <Icon iconCode="x" iconStyle="outline" />
+                    </div>
+                </div>
+                <slot />
+            </div>
+        </div>
+    </div>
+</astro-dialog>
+
+<style>
+
+body {
+    margin: 0;
+}
+
+.dialog-overlay {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+.dialog-container {
+    position: relative;
+    margin: 0 auto;
+    top: 5vh;
+    width: 100%;
+    max-width: 60rem;
+    
+    background-color: var(--color-bg-dialog);
+    border-radius: 5px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,0.16), 0 0 10px 0 rgba(0,0,0,0.12);
+
+    display: flex;
+    justify-content: center;
+}
+
+.dialog-content {
+    margin: 1.5rem 1.5rem;
+    width: 100%;
+}
+
+.dialog-exit-button {
+    width: 1.5rem;
+    margin: 0 1rem;
+    color: var(--color-text-primary);
+    cursor: pointer;
+}
+
+.dialog-exit-button:hover {
+    color: var(--color-accent);
+}
+
+</style>
+<script>
+
+    class Dialog extends HTMLElement {
+        connectedCallback() {
+            let exit: HTMLElement | null = this.querySelector(".dialog-exit-button");
+            exit?.addEventListener("click", () => {
+                this.dispatchEvent(new CustomEvent("dialog:close"));
+            });
+        }
+    }
+    
+    customElements.define("astro-dialog", Dialog);
+
+</script>

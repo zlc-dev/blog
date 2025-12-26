@@ -1,0 +1,89 @@
+---
+import type { SupportedLanguages } from '../i18n_config.ts';
+
+
+interface Props {
+    data_repo: string;
+    data_repo_id: string;
+    data_category: string;
+    data_category_id: string;
+    theme_path: string;
+    locale: SupportedLanguages
+};
+
+const {
+    data_repo,
+    data_repo_id,
+    data_category,
+    data_category_id,
+    theme_path,
+    locale
+} = Astro.props;
+
+function format_locale(locale: SupportedLanguages): string {
+    let l = locale.split('-', 2);
+    if (l.length < 2) return locale;
+    return `${l[0]}-${l[1].toUpperCase()}`;
+}
+
+const locale_str = format_locale(locale);
+
+---
+
+<astro-giscus>
+    <script src="https://giscus.app/client.js"
+            data-repo={data_repo}
+            data-repo-id={data_repo_id}
+            data-category={data_category}
+            data-category-id={data_category_id}
+            data-mapping="og:title"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme={theme_path}
+            data-lang={locale_str}
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async>
+    </script>
+</astro-giscus>
+
+<script>
+
+import { getTheme } from "../theme";
+
+class Giscus extends HTMLElement {
+    connectedCallback() {
+        const iframe = document.querySelector<HTMLIFrameElement>(
+            "iframe.giscus-frame"
+        );
+
+        iframe?.addEventListener("load", () => {
+            if (!iframe) return;
+            let theme = getTheme();
+            setTimeout(() => {
+                const origin = new URL(iframe.src).origin;
+                iframe.contentWindow?.postMessage(
+                    { giscus: { setConfig: { theme } } },
+                    origin
+                );
+            }, 500);
+        })
+
+        this.addEventListener("giscus:theme-update", () => {
+            if (!iframe) return;
+            let theme = getTheme();
+            const origin = new URL(iframe.src).origin;
+            iframe.contentWindow?.postMessage(
+                { giscus: { setConfig: { theme } } },
+                origin
+            );
+        });
+    }
+}
+
+customElements.define("astro-giscus", Giscus);
+
+
+</script>

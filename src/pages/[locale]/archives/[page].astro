@@ -1,0 +1,154 @@
+---
+import { getCollection } from "astro:content"
+import type { GetStaticPaths } from "astro";
+import { SUPPORTED_LANGUAGES } from "../../../i18n_config.ts";
+import { i18n } from "../../../i18n/localization"
+import I18nKey from "../../../i18n/i18nKey"
+import MenuBar from "../../../components/MenuBar.astro";
+import Header from "../../../components/Header.astro";
+import Pagination from "../../../components/Pagination.astro";
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+export const getStaticPaths = (async ({ paginate }) => {
+    const posts = (await getCollection("posts")).sort((a, b) => (b.data.published.getTime() - a.data.published.getTime()));
+    return SUPPORTED_LANGUAGES.flatMap(locale => paginate(posts, {
+		params: { locale },
+        pageSize: 16
+	}));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const { locale } = Astro.params;
+
+const grouped_page = page.data.reduce<Map<number, CollectionEntry<"posts">[]>>((acc, post) => {
+    const year = post.data.published.getFullYear();
+    if (!acc.has(year)) {
+        acc.set(year, []);
+    }
+    acc.get(year)!.push(post);
+    return acc;
+}, new Map);
+
+---
+
+<html lang={locale} data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/theme/global.css">
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{i18n(locale, I18nKey.site_name)}</title>
+</head>
+<body>
+    <Header title={i18n(locale, I18nKey.archive)} banner_height={60} data-pagefind-ignore />
+    <MenuBar locale={locale} inheader={true} slot="menu-bar"/>
+    <section class="archives-list-container">
+        <div class="archives-list">
+            {
+            grouped_page.entries().map(([year, posts]) => (
+            <section class="archive-year">
+                <h2 class="archive-year-title">{year}</h2>
+                <ul class="archive-posts">
+                    {
+                    posts.map(post => (
+                    <li class="archive-post">
+                        <span style="color: var(--color-text-muted);">
+                            {post.data.published.getMonth() + 1}-{post.data.published.getDate()}
+                        </span>
+                        <a href={getRelativeLocaleUrl(locale, `posts/${post.id}`)}>
+                            {post.data.title}
+                        </a>
+                    </li>
+                    ))
+                    }
+                </ul>
+            </section>
+            ))
+            }
+            <Pagination locale={locale} page={page} href_fn={(index) => (`/archives/${index}`)}/>
+        </div>
+    </section>
+</body>
+
+<style>
+.archives-list-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.archives-list {
+    min-width: 800px;
+    width: 40%; 
+    margin-top: -5vh;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-bg-surface);
+    border-radius: 5px;
+    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
+}
+
+.archives-list {
+    color: var(--color-text-primary);
+}
+
+.archives-list ul {
+    list-style: none;
+}
+
+.archive-year {
+    width: 80%;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+}
+
+.archive-year-title {
+    font-size: 1.75rem;
+    padding-left: 1rem;
+    border-bottom: 0.15rem solid var(--color-accent);
+    padding-bottom: 0.25rem;
+}
+
+.archive-posts {
+    list-style: none;
+    padding: 0;
+    margin-left: 2rem;
+}
+
+.archive-post {
+    display: flex;
+    gap: 2rem;
+    align-items: baseline;
+    padding: 1rem 0;
+}
+
+.archive-post time {
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.archive-post a {
+    font-size: 1.2rem;
+    color: var(--color-text-primary);
+    text-decoration: none;
+}
+
+.archive-post a:hover {
+    color: var(--color-accent);
+}
+
+
+@media (max-aspect-ratio: 3/4) , (max-width: 768px) {
+    .archives-list {
+        width: 100%;
+        min-width: 0;
+        box-shadow: none;
+    }
+}
+
+</style>
+
