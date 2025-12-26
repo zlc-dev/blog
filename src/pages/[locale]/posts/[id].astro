@@ -12,6 +12,7 @@ import { getRelativeLocaleUrl } from "astro/virtual-modules/i18n.js";
 import Icon from "heroicons-astro/Heroicon.astro";
 import { SITE_CONFIG } from "../../../site_config.ts"
 import { getAbsolutePath, getRelativePath } from "../../../utils";
+import { getAbsoluteLocaleUrl } from "astro:i18n";
 
 export const getStaticPaths = (async () => {
     const posts = await getCollection("posts");
@@ -63,7 +64,7 @@ const next_post = posts[cur_post_idx + 1];
                 <div class="post-details">
                     <div class="post-info">
                         <div>{page.data.title}</div>
-                        <div>{getAbsolutePath(`posts/${page.id}`)}</div>
+                        <div>{getAbsoluteLocaleUrl(locale, `posts/${page.id}`)}</div>
                     </div>
                     <div class="post-meta">
                         <div class="post-meta-item">
@@ -188,7 +189,6 @@ body {
 }
 
 .post-info {
-    width: 100%;
     margin: 1rem 1rem;
 }
 
