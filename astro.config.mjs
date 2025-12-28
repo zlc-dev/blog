@@ -1,9 +1,16 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, FALLBACK_LAN } from "./src/i18n_config.ts"
+import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, FALLBACK_LAN } from "./src/i18n_config.ts";
 import pagefind from 'astro-pagefind';
+import icon from 'astro-icon';
 import { SITE_CONFIG } from './src/site_config.ts';
+
+const ASTRO_ICON_OPTS = {
+  include: {
+    heroicons: ["*"],
+  },
+};
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,5 +27,5 @@ export default defineConfig({
       fallbackType: "redirect"
     },
   },
-  integrations: [pagefind()],
+  integrations: [pagefind(), icon(ASTRO_ICON_OPTS)],
 });

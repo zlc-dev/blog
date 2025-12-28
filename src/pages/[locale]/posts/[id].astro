@@ -9,7 +9,7 @@ import PageNav from "../../../components/PageNav.astro";
 import { SUPPORTED_LANGUAGES } from "../../../i18n_config.ts";
 import Giscus from "../../../components/Giscus.astro";
 import { getRelativeLocaleUrl } from "astro/virtual-modules/i18n.js";
-import Icon from "heroicons-astro/Heroicon.astro";
+import { Icon } from "astro-icon/components";
 import { SITE_CONFIG } from "../../../site_config.ts"
 import { getAbsolutePath, getRelativePath } from "../../../utils";
 import { getAbsoluteLocaleUrl } from "astro:i18n";
@@ -90,7 +90,7 @@ const next_post = posts[cur_post_idx + 1];
                         href={getRelativeLocaleUrl(locale, `posts/${prev_post.id}`)}
                         class="post-link"
                     >
-                        <span style="width: 1.5rem;"><Icon iconCode="chevron-left" iconStyle="outline"/></span>
+                        <span style="font-size: 1.5rem;"><Icon name="heroicons:chevron-left"/></span>
                         <span class="post-link-text">{prev_post.data.title}</span>
                     </a>
                     </div>
@@ -103,7 +103,7 @@ const next_post = posts[cur_post_idx + 1];
                         class="post-link"
                     >
                         <span class="post-link-text">{next_post.data.title}</span>
-                        <span style="width: 1.5rem;"><Icon iconCode="chevron-right" iconStyle="outline"/></span>
+                        <span style="font-size: 1.5rem;"><Icon name="heroicons:chevron-right"/></span>
                     </a>
                     </div>
                 )}
@@ -252,6 +252,7 @@ body {
 }
 
 .post-link-text {
+    font-size: 1.2rem;
     flex-grow: 1;
 }
 

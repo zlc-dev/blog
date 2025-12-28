@@ -1,5 +1,5 @@
 ---
-import Icon from "heroicons-astro/Heroicon.astro";
+import { Icon } from "astro-icon/components";
 
 interface Props {
     id?: string;
@@ -16,7 +16,7 @@ const { id, class: className } = Astro.props;
             <div class="dialog-content">
                 <div style="width: 100%; display: flex; justify-content: flex-end; margin-bottom: 0.75rem;">
                     <div class="dialog-exit-button">
-                        <Icon iconCode="x" iconStyle="outline" />
+                        <Icon name="heroicons:x-mark" />
                     </div>
                 </div>
                 <slot />

@@ -2,7 +2,7 @@
 import type { Page } from 'astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { DEFAULT_LANGUAGE } from '../i18n_config.ts';
-import Icon from "heroicons-astro/Heroicon.astro";
+import { Icon } from "astro-icon/components"
 
 interface Props {
     page: Page<any>;
@@ -43,9 +43,7 @@ const pagination = neighbour_pages(1);
 {
     <nav>
     <a href={page.url.prev ?? "#"} class:list={["page-link", { disable: !page.url.prev}]}>
-        <div style="width: 1rem;">
-            <Icon iconCode="chevron-left"/>
-        </div>
+        <Icon name="heroicons:chevron-left"/>
     </a>
 
     {pagination.map((num) => (num === "ellipsis"? (<span>...</span>) :
@@ -58,9 +56,7 @@ const pagination = neighbour_pages(1);
     ))}
 
     <a href={page.url.next ?? "#"} class:list={["page-link", { disable: !page.url.next}]}>
-        <div style="width: 1rem;">
-            <Icon iconCode="chevron-right"/>
-        </div>
+        <Icon name="heroicons:chevron-right"/>
     </a>
     </nav>
 }

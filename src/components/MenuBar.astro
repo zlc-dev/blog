@@ -3,7 +3,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import I18nKey from "../i18n/i18nKey";
 import { DEFAULT_LANGUAGE, type SupportedLanguages } from "../i18n_config.ts";
 import { i18n } from "../i18n/localization";
-import Icon from "heroicons-astro/Heroicon.astro";
+import { Icon } from "astro-icon/components";
 import Dialog from "./Dialog.astro";
 import Search from "astro-pagefind/components/Search"
 
@@ -40,7 +40,7 @@ const menu_bar_items: MenuBarItem[] = [
                     aria-expanded="false"
                     aria-label="Open menu"
                 >
-                    <Icon class="icon-bars-3" iconCode="menu" iconStyle="outline" />
+                    <Icon class="icon-bars-3" name="heroicons:bars-3" />
                 </div>
 
                 <div class="menu-dropdown">
@@ -66,15 +66,19 @@ const menu_bar_items: MenuBarItem[] = [
         <div class="menu-bar-right">
             <div class="menu-theme-toggle menu-theme-toggle-btn">
                 <div class="icon icon-sun">
-                    <Icon iconCode="sun" iconStyle="outline" />
+                    <Icon name="heroicons:sun"/>
                 </div>
                 <div class="icon icon-moon">
-                    <Icon iconCode="moon" iconStyle="outline" />
+                    <Icon name="heroicons:moon"/>
                 </div>
             </div>
-            <div class="menu-search-button" style="width: 1.5rem;">
-                <Icon iconCode="search" iconStyle="outline" />
+            <div class="menu-search-button" >
+                <Icon name="heroicons:magnifying-glass"/>
             </div>
+            <!-- todo: locale selector -->
+            <!-- <div class="menu-locale-selector" >
+                <Icon name="heroicons:language"/>
+            </div> -->
         </div>
     </div>
 </nav>
@@ -213,7 +217,7 @@ body {
 .menu-toggle {
     background: none;
     border: none;
-    width: 1.5rem;
+    font-size: 1.5rem;
     color: inherit;
     padding: 0.5rem;
     cursor: pointer;
@@ -224,7 +228,6 @@ body {
 }
 
 .menu-theme-toggle {
-    width: 1.5rem;
     cursor: pointer;
     display: inline-grid;
     place-items: center;
@@ -235,15 +238,12 @@ body {
 }
 
 .menu-theme-toggle .icon {
+    font-size: 1.5rem;
     width: 100%;
     grid-area: 1 / 1;
-    font-size: 1.2rem;
     line-height: 1;
-    transition: opacity 0.12s linear;
-}
-
-.menu-theme-toggle .icon {
     opacity: 0;
+    transition: opacity 0.12s linear;
 }
 
 :root[data-theme="light"] .menu-theme-toggle .icon.icon-sun {
@@ -254,15 +254,17 @@ body {
     opacity: 1;
 }
 
-.menu-search-button {
+.menu-search-button, .menu-locale-selector{
     text-decoration: none;
     color: inherit;
     cursor: pointer;
+    font-size: 1.5rem;
 }
 
-.menu-search-button:hover {
+.menu-search-button:hover, .menu-locale-selector:hover {
     color: var(--color-accent)
 }
+
 
 @media (max-aspect-ratio: 3/4) , (max-width: 768px) {
     .menu-bar-site { display: none; }
@@ -315,8 +317,6 @@ body {
         outline-offset: -1px;
         border-radius: 0.25rem;
     }
-
-
 </style>
 
 <script is:inline>
