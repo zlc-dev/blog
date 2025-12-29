@@ -11,7 +11,7 @@ import Giscus from "../../../components/Giscus.astro";
 import { getRelativeLocaleUrl } from "astro/virtual-modules/i18n.js";
 import { Icon } from "astro-icon/components";
 import { SITE_CONFIG } from "../../../site_config.ts"
-import { getAbsolutePath, getRelativePath } from "../../../utils";
+import { getRelativePath } from "../../../utils";
 import { getAbsoluteLocaleUrl } from "astro:i18n";
 
 export const getStaticPaths = (async () => {
@@ -82,6 +82,7 @@ const next_post = posts[cur_post_idx + 1];
                             <div>{page.data.license}</div>
                         </div>
                     </div>
+                    <Icon class="post-license-logo" name="fa6-brands:creative-commons"/>
                 </div>
                 <div class="post-prevnext">
                 {prev_post && (
@@ -185,11 +186,15 @@ body {
     width: 90%;
     background-color: var(--color-bg-dialog);
     overflow-x: auto;
+    overflow: hidden;
+    position: relative;
     align-self: center;
 }
 
 .post-info {
+    position: relative;
     margin: 1rem 1rem;
+    z-index: 1;
 }
 
 .post-info div:nth-child(1) {
@@ -202,10 +207,12 @@ body {
 }
 
 .post-meta {
+    position: relative;
     display: flex;
     justify-content: flex-start;
     gap: 1rem;
     margin: 1rem 1rem;
+    z-index: 1;
 }
 
 .post-meta .post-meta-item {
@@ -218,6 +225,19 @@ body {
 .post-meta .post-meta-item div:nth-child(2)  {
     font-size: large;
     color: var(--color-text-muted)
+}
+
+.post-license-logo {
+    font-size: 12rem;
+    position: absolute;
+    right: -1rem;
+    top: 1rem;
+    color: color-mix(
+        in srgb,
+        var(--color-bg-dialog),
+        #888 30%
+    );
+    pointer-events: none;
 }
 
 .post-prevnext {

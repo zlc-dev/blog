@@ -6,12 +6,12 @@ import { z } from 'astro/zod';
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from './i18n_config.ts';
 
 export const CCLicense = z.enum([
-    "CC-BY",
-    "CC-BY-SA",
-    "CC-BY-ND",
-    "CC-BY-NC",
-    "CC-BY-NC-SA",
-    "CC-BY-NC-ND",
+    "CC BY",
+    "CC BY-SA",
+    "CC BY-ND",
+    "CC BY-NC",
+    "CC BY-NC-SA",
+    "CC BY-NC-ND",
 ]);
 
 const posts = defineCollection({
@@ -23,7 +23,7 @@ const posts = defineCollection({
         summary: z.string().optional(),
         published: z.date(),
         locale: z.enum(SUPPORTED_LANGUAGES).default(DEFAULT_LANGUAGE),
-        license: CCLicense.default("CC-BY-NC")
+        license: CCLicense.default("CC BY-NC")
     })
 });
 

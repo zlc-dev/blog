@@ -27,6 +27,6 @@ export const GET: APIRoute = () =>
     new Response(generateCSS(), {
         headers: {
             "Content-Type": "text/css",
-            "Cache-Control": "public, max-age=31536000",
+            "Cache-Control": "public, max-age=3600",
         },
     });

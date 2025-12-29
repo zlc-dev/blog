@@ -9,6 +9,7 @@ import { SITE_CONFIG } from './src/site_config.ts';
 const ASTRO_ICON_OPTS = {
   include: {
     heroicons: ["*"],
+    "fa6-brands": ["creative-commons"],
   },
 };
 
