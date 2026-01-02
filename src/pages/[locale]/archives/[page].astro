@@ -48,7 +48,7 @@ const grouped_page = page.data.reduce<Map<number, CollectionEntry<"posts">[]>>((
     <section class="archives-list-container">
         <div class="archives-list">
             {
-            grouped_page.entries().map(([year, posts]) => (
+            [...grouped_page.entries()].map(([year, posts]) => (
             <section class="archive-year">
                 <h2 class="archive-year-title">{year}</h2>
                 <ul class="archive-posts">

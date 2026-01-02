@@ -9,7 +9,7 @@ enum I18nKey {
     archive_page = "archive_page",
     author = "author",
     publication_date = "published_date",
-    license = "license",
+    license = "license"
 };
 
 export default I18nKey;

@@ -1,14 +1,21 @@
 import type I18nKey from "./i18nKey.ts"
-import { type SupportedLanguages, DEFAULT_LANGUAGE, FALLBACK_LAN } from "../i18n_config.ts";
+import { type SupportedLanguages, DEFAULT_LANGUAGE, FALLBACK_LAN, SUPPORTED_LANGUAGES } from "../i18n_config.ts";
 import { en } from "./localizations/en";
 import { zh } from "./localizations/zh";
 
+type LanguageNames = `lan_${SupportedLanguages}`;
+type I18nKeyAll = I18nKey | LanguageNames;
+
+export function lan2I18nKey(lan: SupportedLanguages): I18nKeyAll {
+    return `lan_${lan}`;
+}
+
 export type Localization = {
-    [K in I18nKey]?: string
+    [K in I18nKeyAll]?: string
 };
 
 export type DefaultLocalization = {
-    [K in I18nKey]: string
+    [K in I18nKeyAll]: string
 };
 
 type Lan2LocalMapType = {
@@ -32,7 +39,7 @@ export function getLocalization(lang: SupportedLanguages): Localization | undefi
     return LAN_TO_LOCAL_MAP[lang];
 }
 
-export function i18n(lang: SupportedLanguages, key: I18nKey): string {
+export function i18n(lang: SupportedLanguages, key: I18nKeyAll): string {
     if (lang == DEFAULT_LANGUAGE) {
         return getDefaultLocalization()[key];
     }

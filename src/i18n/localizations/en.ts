@@ -13,4 +13,6 @@ export const en = {
     [Key.author]: "Author",
     [Key.publication_date]: "Publication date",
     [Key.license]: "License",
+    "lan_zh-cn": "Simplified Chinese",
+    lan_en: "English"
 } satisfies Localization;

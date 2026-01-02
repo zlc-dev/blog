@@ -13,4 +13,6 @@ export const zh = {
     [Key.author]: "作者",
     [Key.publication_date]: "发布日期",
     [Key.license]: "许可证",
+    "lan_zh-cn": "简体中文",
+    lan_en: "英语"
 } satisfies Localization;

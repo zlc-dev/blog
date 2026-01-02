@@ -1,11 +1,13 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import I18nKey from "../i18n/i18nKey";
-import { DEFAULT_LANGUAGE, type SupportedLanguages } from "../i18n_config.ts";
-import { i18n } from "../i18n/localization";
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, type SupportedLanguages } from "../i18n_config.ts";
+import { i18n, lan2I18nKey } from "../i18n/localization";
 import { Icon } from "astro-icon/components";
 import Dialog from "./Dialog.astro";
 import Search from "astro-pagefind/components/Search"
+import { SITE_CONFIG } from "../site_config";
+import { joinPath } from "../utils";
 
 interface MenuBarItem {
     name: I18nKey;
@@ -25,6 +27,11 @@ const menu_bar_items: MenuBarItem[] = [
     { name: I18nKey.archive_page, link: getRelativeLocaleUrl(locale, "/archives") },
     { name: I18nKey.about_page, link: "https://github.com/zlc-dev" },
 ];
+
+function getRelUrl(): string {
+    return Astro.url.pathname.slice(joinPath(SITE_CONFIG.base, locale).length + 2);
+}
+
 ---
 <nav class="menu-bar" id="menu-bar" data-inheader={inheader}>
     <div class="menu-bar-inner">
@@ -76,9 +83,22 @@ const menu_bar_items: MenuBarItem[] = [
                 <Icon name="heroicons:magnifying-glass"/>
             </div>
             <!-- todo: locale selector -->
-            <!-- <div class="menu-locale-selector" >
+            <div class="menu-locale-selector-button" aria-expanded="false" >
                 <Icon name="heroicons:language"/>
-            </div> -->
+            </div>
+            <div class="menu-locale-selector-dropdown">
+                <ul>
+                {
+                    SUPPORTED_LANGUAGES.map(v => (
+                    <a href={getRelativeLocaleUrl(v, getRelUrl())} title={i18n(locale, lan2I18nKey(v))}>
+                        <li class:list={{selected: locale == v}}>
+                            {i18n(v, lan2I18nKey(v))}
+                        </li>
+                    </a>
+                    ))
+                }
+                </ul>
+            </div>
         </div>
     </div>
 </nav>
@@ -99,6 +119,11 @@ const menu_bar_items: MenuBarItem[] = [
     
 body {
     margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
 .menu-bar {
@@ -254,15 +279,49 @@ body {
     opacity: 1;
 }
 
-.menu-search-button, .menu-locale-selector{
+.menu-search-button, .menu-locale-selector-button{
     text-decoration: none;
     color: inherit;
     cursor: pointer;
     font-size: 1.5rem;
 }
 
-.menu-search-button:hover, .menu-locale-selector:hover {
+.menu-search-button:hover, .menu-locale-selector-button:hover {
     color: var(--color-accent)
+}
+
+.menu-locale-selector-dropdown {
+    position: absolute;
+    top: 100%;
+    margin-top: 0.5rem;
+    min-width: 10rem;
+    color: var(--color-text-primary);
+    background: var(--color-bg-surface);
+    border: 1px solid rgba(0,0,0,.12);
+    flex-direction: column;
+    display: none;
+}
+
+.menu-locale-selector-dropdown ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.menu-locale-selector-dropdown ul li {
+    padding: 0.75rem 0.75rem;
+    cursor: pointer;
+}
+
+.menu-locale-selector-dropdown ul li:hover {
+    background-color: var(--color-selected);
+}
+
+.menu-locale-selector-dropdown ul li.selected {
+    color: var(--color-accent);
 }
 
 
@@ -282,7 +341,7 @@ body {
     .menu-dropdown {
         position: absolute;
         top: 100%;
-        left: 1rem;
+        margin-top: 0.5rem;
         min-width: 10rem;
         color: var(--color-text-primary);
         background: var(--color-bg-surface);
@@ -362,6 +421,7 @@ search_dialog?.addEventListener("dialog:close", () => {
 let toggle: HTMLElement | null = document.querySelector(".menu-toggle");
 let dropdown: HTMLElement | null = document.querySelector(".menu-dropdown");
 
+
 toggle?.addEventListener("click", () => {
     if (!toggle || !dropdown) return;
     const expanded = toggle.getAttribute("aria-expanded") === "true";
@@ -376,6 +436,26 @@ document.addEventListener("click", (e) => {
         dropdown.style.display = "none";
     }
 });
+
+
+let language_selector_button: HTMLElement | null = document.querySelector(".menu-locale-selector-button");
+let language_selector_dropdown: HTMLElement | null = document.querySelector(".menu-locale-selector-dropdown");
+
+language_selector_button?.addEventListener("click", () => {
+    if (!language_selector_button || !language_selector_dropdown) return;
+    const expanded = language_selector_button.getAttribute("aria-expanded") === "true";
+    language_selector_button.setAttribute("aria-expanded", String(!expanded));
+    language_selector_dropdown.style.display = expanded ? "none" : "flex";
+});
+
+document.addEventListener("click", (e) => {
+    if (!language_selector_button || !language_selector_dropdown) return;
+    if (!language_selector_button.contains(e.target as Node) && !language_selector_dropdown.contains(e.target as Node)) {
+        language_selector_button.setAttribute("aria-expanded", "false");
+        language_selector_dropdown.style.display = "none";
+    }
+});
+
 
 const menu_bar: HTMLElement | null = document.getElementById("menu-bar");
 let lastScrollY = window.scrollY;
