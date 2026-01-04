@@ -82,8 +82,7 @@ function getRelUrl(): string {
             <div class="menu-search-button" >
                 <Icon name="heroicons:magnifying-glass"/>
             </div>
-            <!-- todo: locale selector -->
-            <div class="menu-locale-selector-button" aria-expanded="false" >
+            <div class="menu-locale-selector-button" aria-expanded="false">
                 <Icon name="heroicons:language"/>
             </div>
             <div class="menu-locale-selector-dropdown">
@@ -103,7 +102,7 @@ function getRelUrl(): string {
     </div>
 </nav>
 
-<Dialog id="search-dialog">
+<Dialog id="search-dialog" >
     <div style="max-height: 80vh; overflow-y: auto; overscroll-behavior: contain;">
         <div style="padding: 0 1rem;">
             <Search
@@ -392,112 +391,121 @@ a {
 </script>
 
 <script>
-import { switchTheme } from "../theme.ts";
+import { switchTheme, firstSetTheme } from "../theme.ts";
 
-const giscus: HTMLElement | null = document.querySelector("astro-giscus");
+let controller: AbortController = new AbortController();
 
-document.querySelector<HTMLButtonElement>(".menu-theme-toggle-btn")?.addEventListener("click", () => {
-    switchTheme();
-    giscus?.dispatchEvent(new CustomEvent("giscus:theme-update"));
-});
+document.addEventListener("astro:before-preparation", () => { controller.abort(); controller = new AbortController(); });
 
-const search_dialog: HTMLElement | null = document.querySelector("#search-dialog");
+document.addEventListener("astro:page-load", () => {
+    firstSetTheme();
 
-search_dialog?.setAttribute("hidden", "");
+    const giscus: HTMLElement | null = document.querySelector("astro-giscus");
 
-document.querySelector(".menu-search-button")?.addEventListener(
-    "click", 
-    () => {
-        search_dialog?.removeAttribute("hidden");
-        document.body.style.overflow = "hidden";
-    }
-);
+    document.querySelector<HTMLButtonElement>(".menu-theme-toggle-btn")?.addEventListener("click", () => {
+        switchTheme();
+        giscus?.dispatchEvent(new CustomEvent("giscus:theme-update"));
+    }, { signal: controller.signal });
 
-search_dialog?.addEventListener("dialog:close", () => {
+    const search_dialog: HTMLElement | null = document.querySelector("#search-dialog");
+
     search_dialog?.setAttribute("hidden", "");
-    document.body.style.overflow = "";
-})
+    search_dialog?.addEventListener("dialog:close", () => {
+        search_dialog?.setAttribute("hidden", "");
+        document.body.style.overflow = "";
+    }, { signal: controller.signal });
 
-let toggle: HTMLElement | null = document.querySelector(".menu-toggle");
-let dropdown: HTMLElement | null = document.querySelector(".menu-dropdown");
-
-
-toggle?.addEventListener("click", () => {
-    if (!toggle || !dropdown) return;
-    const expanded = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!expanded));
-    dropdown.style.display = expanded ? "none" : "flex";
-});
-
-document.addEventListener("click", (e) => {
-    if (!toggle || !dropdown) return;
-    if (!toggle.contains(e.target as Node) && !dropdown.contains(e.target as Node)) {
-        toggle.setAttribute("aria-expanded", "false");
-        dropdown.style.display = "none";
-    }
-});
-
-
-let language_selector_button: HTMLElement | null = document.querySelector(".menu-locale-selector-button");
-let language_selector_dropdown: HTMLElement | null = document.querySelector(".menu-locale-selector-dropdown");
-
-language_selector_button?.addEventListener("click", () => {
-    if (!language_selector_button || !language_selector_dropdown) return;
-    const expanded = language_selector_button.getAttribute("aria-expanded") === "true";
-    language_selector_button.setAttribute("aria-expanded", String(!expanded));
-    language_selector_dropdown.style.display = expanded ? "none" : "flex";
-});
-
-document.addEventListener("click", (e) => {
-    if (!language_selector_button || !language_selector_dropdown) return;
-    if (!language_selector_button.contains(e.target as Node) && !language_selector_dropdown.contains(e.target as Node)) {
-        language_selector_button.setAttribute("aria-expanded", "false");
-        language_selector_dropdown.style.display = "none";
-    }
-});
-
-
-const menu_bar: HTMLElement | null = document.getElementById("menu-bar");
-let lastScrollY = window.scrollY;
-
-const THRESHOLD = 8;
-
-window.addEventListener("scroll", () => {
-    const currentY = window.scrollY;
-
-    if (Math.abs(currentY - lastScrollY) < THRESHOLD) return;
-
-    if (currentY > lastScrollY && currentY > 64) {
-        menu_bar?.classList.add("hidden");
-    } else {
-        menu_bar?.classList.remove("hidden");
-    }
-
-    lastScrollY = currentY;
-});
-
-let ticking = false;
-
-function update() {
-    if(!menu_bar) return;
-    const isAtTop = window.scrollY <= THRESHOLD;
-
-    menu_bar.classList.toggle("at-top", isAtTop);
-
-    ticking = false;
-}
-
-if (menu_bar?.dataset.inheader === "true") {
-    update();
-    window.addEventListener(
-        "scroll",
+    document.querySelector(".menu-search-button")?.addEventListener(
+        "click", 
         () => {
-            if (!ticking) {
-                requestAnimationFrame(update);
-                ticking = true;
-            }
-        },
-        { passive: true }
+            search_dialog?.removeAttribute("hidden");
+            document.body.style.overflow = "hidden";
+        }, 
+        { signal: controller.signal }
     );
-}
+
+    const toggle: HTMLElement | null = document.querySelector(".menu-toggle");
+    const dropdown: HTMLElement | null = document.querySelector(".menu-dropdown");
+
+    toggle?.addEventListener("click", () => {
+        if (!toggle || !dropdown) return;
+        const expanded = toggle.getAttribute("aria-expanded") === "true";
+        toggle.setAttribute("aria-expanded", String(!expanded));
+        dropdown.style.display = expanded ? "none" : "flex";
+    }, { signal: controller.signal });
+
+    document.addEventListener("click", (e) => {
+        if (!toggle || !dropdown) return;
+        if (!toggle.contains(e.target as Node) && !dropdown.contains(e.target as Node)) {
+            toggle.setAttribute("aria-expanded", "false");
+            dropdown.style.display = "none";
+        }
+    }, { signal: controller.signal });
+
+
+    const language_selector_button: HTMLElement | null = document.querySelector(".menu-locale-selector-button");
+    const language_selector_dropdown: HTMLElement | null = document.querySelector(".menu-locale-selector-dropdown");
+
+    language_selector_button?.addEventListener("click", () => {
+        if (!language_selector_button || !language_selector_dropdown) return;
+        const expanded = language_selector_button.getAttribute("aria-expanded") === "true";
+        language_selector_button.setAttribute("aria-expanded", String(!expanded));
+        language_selector_dropdown.style.display = expanded ? "none" : "flex";
+    }, { signal: controller.signal });
+
+    document.addEventListener("click", (e) => {
+        if (!language_selector_button || !language_selector_dropdown) return;
+        if (!language_selector_button.contains(e.target as Node) && !language_selector_dropdown.contains(e.target as Node)) {
+            language_selector_button.setAttribute("aria-expanded", "false");
+            language_selector_dropdown.style.display = "none";
+        }
+    }, { signal: controller.signal });
+
+    const menu_bar: HTMLElement | null = document.getElementById("menu-bar");
+
+    let lastScrollY = window.scrollY;
+
+    const THRESHOLD = 8;
+
+    window.addEventListener("scroll", () => {
+        const currentY = window.scrollY;
+
+        if (Math.abs(currentY - lastScrollY) < THRESHOLD) return;
+
+        if (currentY > lastScrollY && currentY > 64) {
+            menu_bar?.classList.add("hidden");
+        } else {
+            menu_bar?.classList.remove("hidden");
+        }
+
+        lastScrollY = currentY;
+    }, { signal: controller.signal });
+
+    let ticking = false;
+
+    function update() {
+        if(!menu_bar) return;
+        const isAtTop = window.scrollY <= THRESHOLD;
+
+        menu_bar.classList.toggle("at-top", isAtTop);
+
+        ticking = false;
+    }
+
+    if (menu_bar?.dataset.inheader === "true") {
+        update();
+        window.addEventListener(
+            "scroll",
+            () => {
+                if (!ticking) {
+                    requestAnimationFrame(update);
+                    ticking = true;
+                }
+            },
+            { passive: true, signal: controller.signal }
+        );
+    }
+});
+
+
 </script>

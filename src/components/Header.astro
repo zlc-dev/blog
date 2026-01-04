@@ -112,11 +112,10 @@ body {
     update();
 
     window.addEventListener(
-        "load",
+        "astro:page-load",
         () => {
             if (!ticking) {
                 requestAnimationFrame(() => {
-                    update();
                     ticking = false;
                 });
                 ticking = true;

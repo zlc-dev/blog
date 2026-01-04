@@ -23,8 +23,19 @@ const posts = defineCollection({
         summary: z.string().optional(),
         published: z.date(),
         locale: z.enum(SUPPORTED_LANGUAGES).default(DEFAULT_LANGUAGE),
-        license: CCLicense.default("CC BY-NC")
+        license: CCLicense.default("CC BY-NC"),
     })
 });
 
-export const collections = { posts };
+const musics = defineCollection({
+    loader: glob({ pattern: "**/*.md", base: "./src/content/music" }),
+    schema: z.object({
+        name: z.string(),
+        artist: z.string(),
+        url: z.string(),
+        cover: z.string(),
+        lrc: z.string().default("")
+    })
+});
+
+export const collections = { posts, musics };

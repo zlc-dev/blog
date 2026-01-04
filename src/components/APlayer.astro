@@ -1,0 +1,45 @@
+---
+import 'aplayer/dist/APlayer.min.css';
+import { getCollection } from 'astro:content';
+import { SITE_CONFIG } from '../site_config';
+import { joinPath } from '../utils';
+
+const musics = await getCollection("musics");
+
+// ⚠️ 只保留客户端需要的数据
+const clientMusics = musics.map(m => ({
+    name: m.data.name,
+    artist: m.data.artist,
+    url: "/" + joinPath(SITE_CONFIG.base, m.data.url),
+    cover:"/" + joinPath(SITE_CONFIG.base, m.data.cover),
+    lrc: m.data.lrc == "" ? "" : "/" + joinPath(SITE_CONFIG.base, m.data.lrc),
+}));
+---
+
+<div
+  id="player-container"
+  style="width:max-content"
+  data-musics={JSON.stringify(clientMusics)}
+  transition:persist
+></div>
+
+
+<script>
+import APlayer from 'aplayer';
+import { getTheme, DEFAULT_THEME, THEMES } from '../theme';
+let player;
+let playerContainer;
+document.addEventListener('DOMContentLoaded', async () => {
+    playerContainer = document.getElementById('player-container');
+    const musics = JSON.parse(playerContainer?.dataset.musics ?? "[]");
+    player = new APlayer({
+        container: playerContainer,
+        autoplay: false,
+        fixed: true,
+        lrcType: 3,
+        audio: musics,
+        theme: THEMES[getTheme() ?? DEFAULT_THEME].accent.primary
+    });
+}, false);
+</script>
+

@@ -2,7 +2,7 @@ export const THEME_NAMES = ["light", "dark"];
 
 export type ThemeName = typeof THEME_NAMES[number];
 
-const DEFAULT_THEME: ThemeName = "light";
+export const DEFAULT_THEME: ThemeName = "light";
 
 export interface ThemeTokens {
     bg: {

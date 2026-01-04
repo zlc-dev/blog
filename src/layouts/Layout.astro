@@ -1,5 +1,11 @@
 ---
+import { ClientRouter } from 'astro:transitions';
+import APlayer from '../components/APlayer.astro';
 ---
-<slot />
 
+<ClientRouter />
+<body>
+    <slot />
+    <APlayer />
+</body>
 

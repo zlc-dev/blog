@@ -78,22 +78,13 @@ type HeadingEl = HTMLHeadingElement;
 type TocListItemEl = HTMLLIElement;
 type DivEl = HTMLDivElement;
 
-const headings: HeadingEl[] = Array.from(
+let headings: HeadingEl[] = Array.from(
     document.querySelectorAll<HeadingEl>(
         '.md-content h1, .md-content h2'
     )
 );
 
-const tocItems = new Map<string, TocListItemEl>();
-
-document.querySelectorAll<TocListItemEl>('.md-navigator li')
-    .forEach(a => {
-        const id = a.getAttribute('id')?.slice(4)
-        if (id) {
-            tocItems.set(id, a)
-        }
-    });
-
+let tocItems = new Map<string, TocListItemEl>();
 
 function setActive(id: string) {
     tocItems.values().filter(li => li.hasAttribute('aria-current')).forEach(li => {
@@ -106,10 +97,10 @@ function setActive(id: string) {
     active.setAttribute('aria-current', 'true');
 }
 
-const reading_obersver_selector = document.querySelector<DivEl>(".md-navigator")?.dataset.readingObersver;
-const reading_obersver: Element | null = document.querySelector<Element>(reading_obersver_selector ?? ".md-navigator");
 
 function updateActive() {
+    const reading_obersver_selector = document.querySelector<DivEl>(".md-navigator")?.dataset.readingObersver;
+    const reading_obersver = document.querySelector<Element>(reading_obersver_selector ?? ".md-navigator");
     if (!reading_obersver) return;
     const rtop = reading_obersver.getBoundingClientRect().top;
     const rbottom = Math.min(rtop + 20, window.innerHeight);
@@ -146,11 +137,32 @@ function trafficLimitedUpdateActive() {
     }
 }
 
-window.addEventListener('load', updateActive);
-window.addEventListener('load', () => {
+
+
+document.addEventListener("astro:page-load", () => {
+
+    tocItems.clear();
+
+    headings = Array.from(
+        document.querySelectorAll<HeadingEl>(
+            '.md-content h1, .md-content h2'
+        )
+    );
+
+    document.querySelectorAll<TocListItemEl>('.md-navigator li')
+        .forEach(a => {
+            const id = a.getAttribute('id')?.slice(4)
+            if (id) {
+                tocItems.set(id, a)
+            }
+        });
+    
+    
     if (!headings.length) return;
     setActive(headings[0].id);
-});
+    updateActive();
+})
+
 window.addEventListener('scroll', trafficLimitedUpdateActive);
 window.addEventListener('resize', trafficLimitedUpdateActive);
 

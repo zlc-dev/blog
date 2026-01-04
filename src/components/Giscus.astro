@@ -26,64 +26,77 @@ function format_locale(locale: SupportedLanguages): string {
     return `${l[0]}-${l[1].toUpperCase()}`;
 }
 
-const locale_str = format_locale(locale);
-
 ---
 
-<astro-giscus>
-    <script src="https://giscus.app/client.js"
-            data-repo={data_repo}
-            data-repo-id={data_repo_id}
-            data-category={data_category}
-            data-category-id={data_category_id}
-            data-mapping="og:title"
-            data-strict="0"
-            data-reactions-enabled="1"
-            data-emit-metadata="0"
-            data-input-position="top"
-            data-theme={theme_path}
-            data-lang={locale_str}
-            data-loading="lazy"
-            crossorigin="anonymous"
-            async>
-    </script>
-</astro-giscus>
+<astro-giscus
+    data-repo={data_repo}
+    data-repo-id={data_repo_id}
+    data-category={data_category}
+    data-category-id={data_category_id}
+    data-theme={theme_path}
+    data-lang={format_locale(locale)}
+></astro-giscus>
 
 <script>
-
 import { getTheme } from "../theme";
 
-class Giscus extends HTMLElement {
+class AstroGiscus extends HTMLElement {
+    constructor() {
+        super();
+    }
+
     connectedCallback() {
-        const iframe = document.querySelector<HTMLIFrameElement>(
-            "iframe.giscus-frame"
+        this.renderGiscus();
+    }
+
+    disconnectedCallback() {
+    }
+
+    handleThemeUpdate() {
+        const iframe = this.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
+        if (!iframe) return;
+
+        const theme = getTheme();
+        const origin = new URL(iframe.src).origin;
+
+        iframe.contentWindow?.postMessage(
+            { giscus: { setConfig: { theme } } },
+            origin
         );
+    }
 
-        iframe?.addEventListener("load", () => {
-            if (!iframe) return;
-            let theme = getTheme();
-            setTimeout(() => {
-                const origin = new URL(iframe.src).origin;
-                iframe.contentWindow?.postMessage(
-                    { giscus: { setConfig: { theme } } },
-                    origin
-                );
-            }, 500);
-        })
+    renderGiscus() {
+        this.innerHTML = "";
+        const script = document.createElement("script");
+        script.src = "https://giscus.app/client.js";
+        script.async = true;
+        script.crossOrigin = "anonymous";
 
-        this.addEventListener("giscus:theme-update", () => {
-            if (!iframe) return;
-            let theme = getTheme();
-            const origin = new URL(iframe.src).origin;
-            iframe.contentWindow?.postMessage(
-                { giscus: { setConfig: { theme } } },
-                origin
-            );
-        });
+        script.setAttribute("data-repo", this.dataset.repo ?? "");
+        script.setAttribute("data-repo-id", this.dataset.repoId ?? "");
+        script.setAttribute("data-category", this.dataset.category ?? "");
+        script.setAttribute("data-category-id", this.dataset.categoryId ?? "");
+        script.setAttribute("data-mapping", "og:title");
+        script.setAttribute("data-reactions-enabled", "1");
+        script.setAttribute("data-input-position", "top");
+        script.setAttribute("data-theme", getTheme() ?? "");
+        script.setAttribute("data-lang", this.dataset.lang ?? "");
+        script.setAttribute("data-loading", "lazy");
+
+        this.appendChild(script);
     }
 }
 
-customElements.define("astro-giscus", Giscus);
+let giscus = document.querySelectorAll<AstroGiscus>("astro-giscus");
+document.addEventListener("astro:page-load", () => {
+    giscus = document.querySelectorAll("astro-giscus");
+    giscus?.forEach(e => e.renderGiscus());
+});
 
+document.addEventListener("giscus:theme-update", () => {
+    giscus?.forEach(e => e.handleThemeUpdate());
+});
+
+customElements.define("astro-giscus", AstroGiscus);
 
 </script>

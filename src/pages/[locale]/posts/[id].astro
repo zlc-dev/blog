@@ -13,6 +13,7 @@ import { Icon } from "astro-icon/components";
 import { SITE_CONFIG } from "../../../site_config.ts"
 import { getRelativePath } from "../../../utils";
 import { getAbsoluteLocaleUrl } from "astro:i18n";
+import Layout from "../../../layouts/Layout.astro";
 
 export const getStaticPaths = (async () => {
     const posts = await getCollection("posts");
@@ -50,7 +51,7 @@ const next_post = posts[cur_post_idx + 1];
     <title>{ `${page.data.title} - ${i18n(locale, I18nKey.site_name)}` }</title>
 </head>
 
-<body>
+<Layout>
     <Header title={ page.data.title } banner_height={60} />
     <MenuBar locale={ locale } inheader={true}/>
     <div class="container">
@@ -127,7 +128,7 @@ const next_post = posts[cur_post_idx + 1];
             </div>
         </div>
     </div>
-</body>
+</Layout>
 
 <style>
 

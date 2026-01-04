@@ -10,6 +10,7 @@ import Pagination from "../../../components/Pagination.astro";
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { getRelativePath } from "../../../utils";
+import Layout from "../../../layouts/Layout.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
     const posts = (await getCollection("posts")).sort((a, b) => (b.data.published.getTime() - a.data.published.getTime()));
@@ -42,9 +43,9 @@ const grouped_page = page.data.reduce<Map<number, CollectionEntry<"posts">[]>>((
     <meta name="generator" content={Astro.generator} />
     <title>{i18n(locale, I18nKey.site_name)}</title>
 </head>
-<body>
+<Layout>
     <Header title={i18n(locale, I18nKey.archive)} banner_height={60} data-pagefind-ignore />
-    <MenuBar locale={locale} inheader={true} slot="menu-bar"/>
+    <MenuBar locale={locale} inheader={true} />
     <section class="archives-list-container">
         <div class="archives-list">
             {
@@ -71,7 +72,7 @@ const grouped_page = page.data.reduce<Map<number, CollectionEntry<"posts">[]>>((
             <Pagination locale={locale} page={page} href_fn={(index) => (`/archives/${index}`)}/>
         </div>
     </section>
-</body>
+</Layout>
 
 <style>
 .archives-list-container {

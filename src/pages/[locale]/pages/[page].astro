@@ -9,6 +9,7 @@ import Header from "../../../components/Header.astro";
 import PostList from "../../../components/PostList.astro";
 import Pagination from "../../../components/Pagination.astro";
 import { getRelativePath } from "../../../utils";
+import Layout from "../../../layouts/Layout.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
     const posts = (await getCollection("posts")).sort((a, b) => (b.data.published.getTime() - a.data.published.getTime()));
@@ -32,8 +33,7 @@ const { locale } = Astro.params;
     <meta name="generator" content={Astro.generator} />
     <title>{i18n(locale, I18nKey.site_name)}</title>
 </head>
-<body>
-
+<Layout>
     <Header title={i18n(locale, I18nKey.welcome)} data-pagefind-ignore/>
     <MenuBar locale={locale} inheader={true} />
     <section class="post-list-container">
@@ -42,7 +42,7 @@ const { locale } = Astro.params;
         </div>
         <Pagination locale={locale} page={page} href_fn={(index) => (`/pages/${index}`)}/>
     </section>
-</body>
+</Layout>
 <style>
 body {
     margin: 0;
