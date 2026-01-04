@@ -6,7 +6,6 @@ import { joinPath } from '../utils';
 
 const musics = await getCollection("musics");
 
-// ⚠️ 只保留客户端需要的数据
 const clientMusics = musics.map(m => ({
     name: m.data.name,
     artist: m.data.artist,

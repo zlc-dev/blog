@@ -400,11 +400,11 @@ document.addEventListener("astro:before-preparation", () => { controller.abort()
 document.addEventListener("astro:page-load", () => {
     firstSetTheme();
 
-    const giscus: HTMLElement | null = document.querySelector("astro-giscus");
+    const giscus = document.querySelectorAll<HTMLElement>("astro-giscus");
 
     document.querySelector<HTMLButtonElement>(".menu-theme-toggle-btn")?.addEventListener("click", () => {
         switchTheme();
-        giscus?.dispatchEvent(new CustomEvent("giscus:theme-update"));
+        document.dispatchEvent(new CustomEvent("giscus:theme-update"));
     }, { signal: controller.signal });
 
     const search_dialog: HTMLElement | null = document.querySelector("#search-dialog");
