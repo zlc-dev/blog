@@ -4,6 +4,20 @@ import APlayer from '../components/APlayer.astro';
 ---
 
 <ClientRouter />
+<head>
+    <script is:inline>
+        (function() {
+            var theme = localStorage.getItem("theme");
+            if (!theme) {
+                theme = matchMedia("(prefers-color-scheme: dark)").matches
+                    ? "dark"
+                    : "light"
+            }
+            document.documentElement.dataset.theme = theme;
+            localStorage.setItem("theme", theme);
+        }())
+    </script>
+</head>
 <body>
     <slot />
     <APlayer />

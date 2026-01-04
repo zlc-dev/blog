@@ -1,10 +1,12 @@
 import type { APIRoute } from "astro";
-import { THEMES } from "../../theme.ts";
+import { DEFAULT_THEME, THEMES } from "../../theme.ts";
 
 function generateCSS() {
+    const d = THEMES[DEFAULT_THEME];
     return Object.entries(THEMES)
-        .map(([name, t]) => `
-:root[data-theme="${name}"] {
+        .map(([name, t]) => (name == DEFAULT_THEME ? ':root' : `:root[data-theme="${name}"]`) + 
+`
+{
     --color-bg-page: ${t.bg.page};
     --color-bg-surface: ${t.bg.surface};
     --color-bg-dialog: ${t.bg.dialog};

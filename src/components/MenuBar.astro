@@ -33,6 +33,21 @@ function getRelUrl(): string {
 }
 
 ---
+<head>
+    <script is:inline>
+        (function() {
+            var theme = localStorage.getItem("theme");
+            if (!theme) {
+                theme = matchMedia("(prefers-color-scheme: dark)").matches
+                    ? "dark"
+                    : "light"
+            }
+            document.documentElement.dataset.theme = theme;
+            localStorage.setItem("theme", theme);
+        }())
+    </script>
+</head>
+
 <nav class="menu-bar" id="menu-bar" data-inheader={inheader}>
     <div class="menu-bar-inner">
         <div class="menu-bar-left">
@@ -377,30 +392,21 @@ a {
     }
 </style>
 
-<script is:inline>
-    (function() {
-        var theme = localStorage.getItem("theme");
-        if (!theme) {
-            theme = matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light"
-        }
-        document.documentElement.dataset.theme = theme;
-        localStorage.setItem("theme", theme);
-    }())
-</script>
-
 <script>
 import { switchTheme, firstSetTheme } from "../theme.ts";
 
 let controller: AbortController = new AbortController();
 
-document.addEventListener("astro:before-preparation", () => { controller.abort(); controller = new AbortController(); });
+document.addEventListener("astro:before-preparation", () => {
+    controller.abort(); 
+    controller = new AbortController(); 
+});
+
+document.addEventListener("astro:after-swap", () => { 
+    firstSetTheme(); 
+});
 
 document.addEventListener("astro:page-load", () => {
-    firstSetTheme();
-
-    const giscus = document.querySelectorAll<HTMLElement>("astro-giscus");
 
     document.querySelector<HTMLButtonElement>(".menu-theme-toggle-btn")?.addEventListener("click", () => {
         switchTheme();
