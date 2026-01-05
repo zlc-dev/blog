@@ -8,6 +8,7 @@ import Dialog from "./Dialog.astro";
 import Search from "astro-pagefind/components/Search"
 import { SITE_CONFIG } from "../site_config";
 import { joinPath } from "../utils";
+import APlayer from "./APlayer.astro";
 
 interface MenuBarItem {
     name: I18nKey;
@@ -16,11 +17,11 @@ interface MenuBarItem {
 
 interface Props {
     locale?: SupportedLanguages;
-    inheader?: boolean;
+    transparent?: "never" | "at-top";
 }
 
 const locale = Astro.props.locale ?? DEFAULT_LANGUAGE;
-const inheader = Astro.props.inheader ?? false;
+const transparent = Astro.props.transparent ?? "never";
 
 const menu_bar_items: MenuBarItem[] = [
     { name: I18nKey.home_page, link: getRelativeLocaleUrl(locale, "/") },
@@ -33,22 +34,7 @@ function getRelUrl(): string {
 }
 
 ---
-<head>
-    <script is:inline>
-        (function() {
-            var theme = localStorage.getItem("theme");
-            if (!theme) {
-                theme = matchMedia("(prefers-color-scheme: dark)").matches
-                    ? "dark"
-                    : "light"
-            }
-            document.documentElement.dataset.theme = theme;
-            localStorage.setItem("theme", theme);
-        }())
-    </script>
-</head>
-
-<nav class="menu-bar" id="menu-bar" data-inheader={inheader}>
+<nav class="menu-bar" id="menu-bar" data-transparent={transparent}>
     <div class="menu-bar-inner">
         <div class="menu-bar-left">
             <div class="menu-bar-site">
@@ -498,7 +484,7 @@ document.addEventListener("astro:page-load", () => {
         ticking = false;
     }
 
-    if (menu_bar?.dataset.inheader === "true") {
+    if (menu_bar?.dataset.transparent === "at-top") {
         update();
         window.addEventListener(
             "scroll",

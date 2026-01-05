@@ -14,23 +14,24 @@ import { SITE_CONFIG } from "../../../site_config.ts"
 import { getRelativePath } from "../../../utils";
 import { getAbsoluteLocaleUrl } from "astro:i18n";
 import Layout from "../../../layouts/Layout.astro";
+import APlayer from "../../../components/APlayer.astro";
 
 export const getStaticPaths = (async () => {
     const posts = await getCollection("posts");
     return SUPPORTED_LANGUAGES.flatMap(locale => posts.map(post => ({
         params: { locale, id: post.id }, 
-        props: { page: post } 
+        props: { post } 
     })));
 }) satisfies GetStaticPaths;
 
 const { locale } = Astro.params;
-const { page } = Astro.props;
-const { Content, headings } = await render(page);
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
 
 const posts = (await getCollection("posts")).sort((a, b) => (b.data.published.getTime() - a.data.published.getTime()));
 const cur_post_idx = (() => {
     for (let i: number = 0; i < posts.length; ++i) {
-        if (posts[i].id == page.id) {
+        if (posts[i].id == post.id) {
             return i;
         }
     }
@@ -47,84 +48,83 @@ const next_post = posts[cur_post_idx + 1];
     <link rel="icon" type="image/svg+xml" href={getRelativePath("/favicon.svg")} />
     <link rel="stylesheet" href={getRelativePath("/theme/global.css")}>
     <meta name="viewport" content="width=device-width" />
-    <meta property="og:title" content={page.id} />
-    <title>{ `${page.data.title} - ${i18n(locale, I18nKey.site_name)}` }</title>
+    <meta property="og:title" content={post.id} />
+    <title>{ `${post.data.title} - ${i18n(locale, I18nKey.site_name)}` }</title>
 </head>
 
-<Layout>
-    <Header title={ page.data.title } banner_height={60} />
-    <MenuBar locale={ locale } inheader={true}/>
-    <div class="container">
-        <div class="md-container">
-            <div class="md-placeholder"></div>
-            <div class="md-content">
-                <div id="md-reading-observer" style="position: sticky; top: 0; width: 0; height: 0;"/>
-                <div data-pagefind-body class="md-body">
-                    <Content/>
-                </div>
-                <div class="post-details">
-                    <div class="post-info">
-                        <div>{page.data.title}</div>
-                        <div>{getAbsoluteLocaleUrl(locale, `posts/${page.id}`)}</div>
-                    </div>
-                    <div class="post-meta">
-                        <div class="post-meta-item">
-                            <div>{i18n(locale, I18nKey.author)}</div>
-                            <div>{page.data.author}</div>
-                        </div>
-
-                        <div class="post-meta-item">
-                            <div>{i18n(locale, I18nKey.publication_date)}</div>
-                            <div>{page.data.published.toLocaleDateString()}</div>
-                        </div>
-
-                        <div class="post-meta-item">
-                            <div>{i18n(locale, I18nKey.license)}</div>
-                            <div>{page.data.license}</div>
-                        </div>
-                    </div>
-                    <Icon class="post-license-logo" name="fa6-brands:creative-commons"/>
-                </div>
-                <div class="post-prevnext">
-                {prev_post && (
-                    <div class="post-prev">
-                    <a
-                        href={getRelativeLocaleUrl(locale, `posts/${prev_post.id}`)}
-                        class="post-link"
-                    >
-                        <span style="font-size: 1.5rem;"><Icon name="heroicons:chevron-left"/></span>
-                        <span class="post-link-text">{prev_post.data.title}</span>
-                    </a>
-                    </div>
-                )}
-
-                {next_post && (
-                    <div class="post-next">
-                    <a
-                        href={getRelativeLocaleUrl(locale, `posts/${next_post.id}`)}
-                        class="post-link"
-                    >
-                        <span class="post-link-text">{next_post.data.title}</span>
-                        <span style="font-size: 1.5rem;"><Icon name="heroicons:chevron-right"/></span>
-                    </a>
-                    </div>
-                )}
-                </div>
-                <div class="md-discussion">
-                    <Giscus
-                        data_repo={SITE_CONFIG.giscus.data_repo}
-                        data_repo_id={SITE_CONFIG.giscus.data_repo_id}
-                        data_category={SITE_CONFIG.giscus.data_category}
-                        data_category_id={SITE_CONFIG.giscus.data_category_id}
-                        theme_path="light"
-                        locale={locale}
-                    />
-                </div>
+<Layout locale={ locale }>
+    
+    <Header title={ post.data.title } banner_height={60} data-pagefind-ignore />
+    <MenuBar locale={locale} transparent="at-top" />
+    <div class="md-container">
+        <div class="md-placeholder"></div>
+        <div class="md-content">
+            <div id="md-reading-observer" style="position: sticky; top: 0; width: 0; height: 0;"/>
+            <div data-pagefind-body class="md-body">
+                <Content/>
             </div>
-            <div class="md-placeholder">
-                <div style="position: sticky; top: 4rem; margin-top: var(--banner-offset); display: flex; justify-content: right;">
-                    <PageNav locale={locale} headings={headings} reading_obersver="#md-reading-observer"/>
+            <div class="post-details">
+                <div class="post-info">
+                    <div>{post.data.title}</div>
+                    <div>{getAbsoluteLocaleUrl(locale, `posts/${post.id}`)}</div>
                 </div>
+                <div class="post-meta">
+                    <div class="post-meta-item">
+                        <div>{i18n(locale, I18nKey.author)}</div>
+                        <div>{post.data.author}</div>
+                    </div>
+
+                    <div class="post-meta-item">
+                        <div>{i18n(locale, I18nKey.publication_date)}</div>
+                        <div>{post.data.published.toLocaleDateString()}</div>
+                    </div>
+
+                    <div class="post-meta-item">
+                        <div>{i18n(locale, I18nKey.license)}</div>
+                        <div>{post.data.license}</div>
+                    </div>
+                </div>
+                <Icon class="post-license-logo" name="fa6-brands:creative-commons"/>
+            </div>
+            <div class="post-prevnext">
+            {prev_post && (
+                <div class="post-prev">
+                <a
+                    href={getRelativeLocaleUrl(locale, `posts/${prev_post.id}`)}
+                    class="post-link"
+                >
+                    <span style="font-size: 1.5rem;"><Icon name="heroicons:chevron-left"/></span>
+                    <span class="post-link-text">{prev_post.data.title}</span>
+                </a>
+                </div>
+            )}
+
+            {next_post && (
+                <div class="post-next">
+                <a
+                    href={getRelativeLocaleUrl(locale, `posts/${next_post.id}`)}
+                    class="post-link"
+                >
+                    <span class="post-link-text">{next_post.data.title}</span>
+                    <span style="font-size: 1.5rem;"><Icon name="heroicons:chevron-right"/></span>
+                </a>
+                </div>
+            )}
+            </div>
+            <div class="md-discussion">
+                <Giscus
+                    data_repo={SITE_CONFIG.giscus.data_repo}
+                    data_repo_id={SITE_CONFIG.giscus.data_repo_id}
+                    data_category={SITE_CONFIG.giscus.data_category}
+                    data_category_id={SITE_CONFIG.giscus.data_category_id}
+                    theme_path="light"
+                    locale={locale}
+                />
+            </div>
+        </div>
+        <div class="md-placeholder">
+            <div style="position: sticky; top: 4rem; margin-top: var(--banner-offset); display: flex; justify-content: right;">
+                <PageNav locale={locale} headings={headings} reading_obersver="#md-reading-observer"/>
             </div>
         </div>
     </div>
@@ -134,12 +134,6 @@ const next_post = posts[cur_post_idx + 1];
 
 body {
     margin: 0;
-}
-
-.container {
-    flex-direction: column;
-    display: flex;
-    align-items: center;
 }
 
 .md-container {

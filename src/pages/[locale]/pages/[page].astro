@@ -10,6 +10,7 @@ import PostList from "../../../components/PostList.astro";
 import Pagination from "../../../components/Pagination.astro";
 import { getRelativePath } from "../../../utils";
 import Layout from "../../../layouts/Layout.astro";
+import APlayer from "../../../components/APlayer.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
     const posts = (await getCollection("posts")).sort((a, b) => (b.data.published.getTime() - a.data.published.getTime()));
@@ -34,8 +35,8 @@ const { locale } = Astro.params;
     <title>{i18n(locale, I18nKey.site_name)}</title>
 </head>
 <Layout>
-    <Header title={i18n(locale, I18nKey.welcome)} data-pagefind-ignore/>
-    <MenuBar locale={locale} inheader={true} />
+    <Header title={ i18n(locale, I18nKey.welcome) } data-pagefind-ignore />
+    <MenuBar locale={locale} transparent="at-top" />
     <section class="post-list-container">
         <div style="width: 80%;">
             <PostList locale={locale} posts={page.data}/>
@@ -50,7 +51,7 @@ body {
 
 .post-list-container {
     min-width: 800px;
-    width: 40%;
+    width: 50%;
 
     list-style: none;
     padding: 0;

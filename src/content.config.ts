@@ -4,6 +4,8 @@ import { glob, file } from 'astro/loaders';
 
 import { z } from 'astro/zod';
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from './i18n_config.ts';
+import { joinPath } from './utils.ts';
+import { SITE_CONFIG } from './site_config.ts';
 
 export const CCLicense = z.enum([
     "CC BY",
@@ -32,9 +34,9 @@ const musics = defineCollection({
     schema: z.object({
         name: z.string(),
         artist: z.string(),
-        url: z.string(),
-        cover: z.string(),
-        lrc: z.string().default("")
+        url: z.string().transform(v => "/" + joinPath(SITE_CONFIG.base, v)),
+        cover: z.string().transform(v => "/" + joinPath(SITE_CONFIG.base, v)),
+        lrc: z.string().default("").transform(v => "/" + joinPath(SITE_CONFIG.base, v))
     })
 });
 

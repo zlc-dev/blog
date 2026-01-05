@@ -43,9 +43,9 @@ const grouped_page = page.data.reduce<Map<number, CollectionEntry<"posts">[]>>((
     <meta name="generator" content={Astro.generator} />
     <title>{i18n(locale, I18nKey.site_name)}</title>
 </head>
-<Layout>
-    <Header title={i18n(locale, I18nKey.archive)} banner_height={60} data-pagefind-ignore />
-    <MenuBar locale={locale} inheader={true} />
+<Layout>    
+    <Header title={ i18n(locale, I18nKey.archive) } banner_height={60} data-pagefind-ignore />
+    <MenuBar locale={locale} transparent="at-top" />
     <section class="archives-list-container">
         <div class="archives-list">
             {
@@ -83,7 +83,7 @@ const grouped_page = page.data.reduce<Map<number, CollectionEntry<"posts">[]>>((
 
 .archives-list {
     min-width: 800px;
-    width: 40%; 
+    width: 50%; 
     margin-top: -5vh;
     list-style: none;
     display: flex;

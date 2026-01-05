@@ -37,10 +37,10 @@ export const THEMES: Record<ThemeName, ThemeTokens> = {
         },
         text: {
             primary: "rgb(38, 38, 38)",
-            muted: "#262626",
+            muted: "#262626"
         },
         accent: {
-            primary: "rgb(218, 168, 80)",
+            primary: "rgba(230, 153, 28, 1)",
         },
         state: {
             selected: "rgb(191, 191, 191)",
@@ -61,7 +61,7 @@ export const THEMES: Record<ThemeName, ThemeTokens> = {
         },
         text: {
             primary: "rgb(255, 255, 255)",
-            muted: "#d9d9d9",
+            muted: "#d9d9d9"
         },
         accent: {
             primary: "rgb(89, 226, 233)",
