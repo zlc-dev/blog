@@ -1,12 +1,11 @@
 ---
-import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { DEFAULT_LANGUAGE, type SupportedLanguages } from "../i18n_config.ts";
-import type { CollectionEntry } from "astro:content";
 import { getSummary } from "../utils/summary";
+import type { PostType } from "../utils/posts";
 
 interface Props {
-    posts: CollectionEntry<"posts">[];
+    posts: PostType[];
     locale?: SupportedLanguages;
 }
 
@@ -14,14 +13,16 @@ const posts = Astro.props.posts;
 const locale = Astro.props.locale ?? DEFAULT_LANGUAGE;
 ---
 <body>
-    <ul class="post-list">{posts.map(post => (
+    <ul class="post-list">{posts.map(raw_post => {
+        let post = raw_post.i18n[locale]!;
+        return (
         <li class="post-card">
             <div >
-                <a href={getRelativeLocaleUrl(locale, `posts/${post.id}`)}>
+                <a href={getRelativeLocaleUrl(locale, `posts/${raw_post.main.id}`)}>
                     <h1 class="post-title">{post.data.title}</h1>
                 </a>
                 <div style="margin: 1em 0;">
-                    <a href={getRelativeLocaleUrl(locale, `posts/${post.id}`)}>
+                    <a href={getRelativeLocaleUrl(locale, `posts/${raw_post.main.id}`)}>
                         <span class="post-snippet">{ post.data.summary ?? getSummary(post.body?.slice(0, 500) ?? "", 200) }</span>
                     </a>
                 </div>
@@ -41,7 +42,8 @@ const locale = Astro.props.locale ?? DEFAULT_LANGUAGE;
                 </div>
             </div>
         </li>
-    ))}</ul>
+        );
+    })}</ul>
 </body>
 <style>
 

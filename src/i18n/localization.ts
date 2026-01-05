@@ -1,5 +1,5 @@
 import type I18nKey from "./i18nKey.ts"
-import { type SupportedLanguages, DEFAULT_LANGUAGE, FALLBACK_LAN, SUPPORTED_LANGUAGES } from "../i18n_config.ts";
+import { type SupportedLanguages, DEFAULT_LANGUAGE, FALLBACK_LANG, SUPPORTED_LANGUAGES } from "../i18n_config.ts";
 import { en } from "./localizations/en";
 import { zh } from "./localizations/zh";
 
@@ -48,6 +48,6 @@ export function i18n(lang: SupportedLanguages, key: I18nKeyAll): string {
         return loc[key]!;
     }
 
-    const fb = FALLBACK_LAN[lang] ?? DEFAULT_LANGUAGE;
+    const fb = FALLBACK_LANG[lang] ?? DEFAULT_LANGUAGE;
     return i18n(fb, key);
 }

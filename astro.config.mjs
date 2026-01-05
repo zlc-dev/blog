@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, FALLBACK_LAN } from "./src/i18n_config.ts";
+import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, FALLBACK_LANG } from "./src/i18n_config.ts";
 import pagefind from 'astro-pagefind';
 import icon from 'astro-icon';
 import { SITE_CONFIG } from './src/site_config.ts';
@@ -22,7 +22,7 @@ export default defineConfig({
   i18n: {
     locales: [...SUPPORTED_LANGUAGES],
     defaultLocale: DEFAULT_LANGUAGE,
-    fallback: FALLBACK_LAN,
+    fallback: FALLBACK_LANG,
     routing: {
       prefixDefaultLocale: true,
       fallbackType: "redirect"

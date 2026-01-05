@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content"
 import type { GetStaticPaths } from "astro";
-import { SUPPORTED_LANGUAGES } from "../../../i18n_config.ts";
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, type SupportedLanguages, FALLBACK_LANG } from "../../../i18n_config.ts";
 import { i18n } from "../../../i18n/localization"
 import I18nKey from "../../../i18n/i18nKey"
 import MenuBar from "../../../components/MenuBar.astro";
@@ -10,11 +10,11 @@ import PostList from "../../../components/PostList.astro";
 import Pagination from "../../../components/Pagination.astro";
 import { getRelativePath } from "../../../utils";
 import Layout from "../../../layouts/Layout.astro";
-import APlayer from "../../../components/APlayer.astro";
+import { getPosts } from "../../../utils/posts";
 
 export const getStaticPaths = (async ({ paginate }) => {
-    const posts = (await getCollection("posts")).sort((a, b) => (b.data.published.getTime() - a.data.published.getTime()));
-    return SUPPORTED_LANGUAGES.flatMap(locale => paginate(posts, {
+    const posts = (await getPosts()).sort((a, b) => (b.main.data.published.getTime() - a.main.data.published.getTime()));
+    return SUPPORTED_LANGUAGES.flatMap(locale => paginate(posts.filter(p => p.i18n[locale] !== undefined), {
 		params: { locale },
         pageSize: 8
 	}));
@@ -39,7 +39,7 @@ const { locale } = Astro.params;
     <MenuBar locale={locale} transparent="at-top" />
     <section class="post-list-container">
         <div style="width: 80%;">
-            <PostList locale={locale} posts={page.data}/>
+            <PostList locale={locale} posts={page.data.filter(p => p.i18n[locale] !== undefined)}/>
         </div>
         <Pagination locale={locale} page={page} href_fn={(index) => (`/pages/${index}`)}/>
     </section>

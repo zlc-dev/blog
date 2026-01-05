@@ -90,7 +90,7 @@ function getRelUrl(): string {
                 <ul>
                 {
                     SUPPORTED_LANGUAGES.map(v => (
-                    <a href={getRelativeLocaleUrl(v, getRelUrl())} title={i18n(locale, lan2I18nKey(v))}>
+                    <a href={getRelativeLocaleUrl(v, getRelUrl())} title={i18n(locale, lan2I18nKey(v))} data-astro-reload>
                         <li class:list={{selected: locale == v}}>
                             {i18n(v, lan2I18nKey(v))}
                         </li>
@@ -109,7 +109,9 @@ function getRelUrl(): string {
             <Search
                 id="search"
                 className="pagefind-ui"
-                uiOptions={{ showImages: false }}
+                uiOptions={{ 
+                    showImages: false,
+                }}
             />
         </div>
     </div>

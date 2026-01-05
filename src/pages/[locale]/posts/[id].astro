@@ -15,23 +15,25 @@ import { getRelativePath } from "../../../utils";
 import { getAbsoluteLocaleUrl } from "astro:i18n";
 import Layout from "../../../layouts/Layout.astro";
 import APlayer from "../../../components/APlayer.astro";
+import { getPosts } from "../../../utils/posts";
 
 export const getStaticPaths = (async () => {
-    const posts = await getCollection("posts");
-    return SUPPORTED_LANGUAGES.flatMap(locale => posts.map(post => ({
-        params: { locale, id: post.id }, 
+    const posts = await getPosts();
+    return SUPPORTED_LANGUAGES.flatMap(locale => posts.filter(p => p.i18n[locale] !== undefined).map(post => ({
+        params: { locale, id: post.main.id }, 
         props: { post } 
     })));
 }) satisfies GetStaticPaths;
 
 const { locale } = Astro.params;
-const { post } = Astro.props;
+const { post: raw_post } = Astro.props;
+const post = raw_post.i18n[locale]!;
 const { Content, headings } = await render(post);
 
-const posts = (await getCollection("posts")).sort((a, b) => (b.data.published.getTime() - a.data.published.getTime()));
+const posts = (await getPosts()).filter(p => p.i18n[locale] !== undefined).sort((a, b) => (b.main.data.published.getTime() - a.main.data.published.getTime()));
 const cur_post_idx = (() => {
     for (let i: number = 0; i < posts.length; ++i) {
-        if (posts[i].id == post.id) {
+        if (posts[i].main.id == raw_post.main.id) {
             return i;
         }
     }
@@ -48,12 +50,11 @@ const next_post = posts[cur_post_idx + 1];
     <link rel="icon" type="image/svg+xml" href={getRelativePath("/favicon.svg")} />
     <link rel="stylesheet" href={getRelativePath("/theme/global.css")}>
     <meta name="viewport" content="width=device-width" />
-    <meta property="og:title" content={post.id} />
+    <meta property="og:title" content={raw_post.main.id} />
     <title>{ `${post.data.title} - ${i18n(locale, I18nKey.site_name)}` }</title>
 </head>
 
 <Layout locale={ locale }>
-    
     <Header title={ post.data.title } banner_height={60} data-pagefind-ignore />
     <MenuBar locale={locale} transparent="at-top" />
     <div class="md-container">
@@ -90,11 +91,11 @@ const next_post = posts[cur_post_idx + 1];
             {prev_post && (
                 <div class="post-prev">
                 <a
-                    href={getRelativeLocaleUrl(locale, `posts/${prev_post.id}`)}
+                    href={getRelativeLocaleUrl(locale, `posts/${prev_post.i18n[locale]!.id}`)}
                     class="post-link"
                 >
                     <span style="font-size: 1.5rem;"><Icon name="heroicons:chevron-left"/></span>
-                    <span class="post-link-text">{prev_post.data.title}</span>
+                    <span class="post-link-text">{prev_post.i18n[locale]!.data.title}</span>
                 </a>
                 </div>
             )}
@@ -102,10 +103,10 @@ const next_post = posts[cur_post_idx + 1];
             {next_post && (
                 <div class="post-next">
                 <a
-                    href={getRelativeLocaleUrl(locale, `posts/${next_post.id}`)}
+                    href={getRelativeLocaleUrl(locale, `posts/${next_post.i18n[locale]!.id}`)}
                     class="post-link"
                 >
-                    <span class="post-link-text">{next_post.data.title}</span>
+                    <span class="post-link-text">{next_post.i18n[locale]!.data.title}</span>
                     <span style="font-size: 1.5rem;"><Icon name="heroicons:chevron-right"/></span>
                 </a>
                 </div>
