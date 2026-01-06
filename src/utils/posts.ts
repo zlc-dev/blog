@@ -15,9 +15,9 @@ export type PostType = {
     }
 };
 
-export function str2locale(s: string): SupportedLanguages {
+export function str2locale(s: string): SupportedLanguages | null {
     return (SUPPORTED_LANGUAGES as readonly string[]).includes(s) 
-                ? s as SupportedLanguages : DEFAULT_LANGUAGE;
+                ? s as SupportedLanguages : null;
 }
 
 export function langFallbackResult<T>(
@@ -55,7 +55,9 @@ export async function getPosts(): Promise<PostType[]> {
             lang = post.data.locale;
             id = post.id;
         } else {
-            lang = str2locale(lang_id[0]);
+            let lang_ = str2locale(lang_id[0]);
+            if (!lang_) return;
+            lang = lang_;
             id = lang_id[1];
         }
         let entry = map.get(id);
