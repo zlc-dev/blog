@@ -9,18 +9,16 @@ const bannerHeight = `${banner_height}vh`;
 const title = Astro.props.title;
 
 ---
-<body>
-    <header>
-        <div class="header-inner">
-            <div class="banner banner-offset">
-                <h1 data-pagefind-body class="banner-center">
-                    {title}
-                </h1>
-                <div class="banner-credit" >© Bing</div>
-            </div>
+<header>
+    <div class="header-inner">
+        <div class="banner banner-offset">
+            <h1 class="banner-center">
+                {title}
+            </h1>
+            <div class="banner-credit" data-pagefind-ignore>© Bing</div>
         </div>
-    </header>
-</body>
+    </div>
+</header>
 
 <style define:vars={{bannerHeight}}>
 

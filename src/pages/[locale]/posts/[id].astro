@@ -67,7 +67,7 @@ const next_post = posts[cur_post_idx + 1];
             <div class="post-details">
                 <div class="post-info">
                     <div>{post.data.title}</div>
-                    <div>{getAbsoluteLocaleUrl(locale, `posts/${post.id}`)}</div>
+                    <div>{getAbsoluteLocaleUrl(locale, `posts/${raw_post.main.id}`)}</div>
                 </div>
                 <div class="post-meta">
                     <div class="post-meta-item">

@@ -84,14 +84,14 @@ let headings: HeadingEl[] = Array.from(
     )
 );
 
-let tocItems = new Map<string, TocListItemEl>();
+let toc_items = new Map<string, TocListItemEl>();
 
 function setActive(id: string) {
-    tocItems.values().filter(li => li.hasAttribute('aria-current')).forEach(li => {
+    toc_items.values().filter(li => li.hasAttribute('aria-current')).forEach(li => {
         li.removeAttribute('aria-current');
     });
 
-    const active = tocItems.get(id);
+    const active = toc_items.get(id);
     if (!active) return;
 
     active.setAttribute('aria-current', 'true');
@@ -105,22 +105,17 @@ function updateActive() {
     const rtop = reading_obersver.getBoundingClientRect().top;
     const rbottom = Math.min(rtop + 20, window.innerHeight);
 
-    let current: HTMLElement | null = null;
-    
-    // binary search
-    var i = 0, j = headings.length - 1;
-    while(i <= j) {
-        var m: number = Math.floor((i + j) / 2);
-        if (headings[m].getBoundingClientRect().bottom <= rtop) {
-            i = m + 1;
-        } else {
-            j = m - 1;
+    let current: HTMLElement | undefined;
+    let min_dis: number = 1e6;
+    headings.forEach(e => {
+        let dis = Math.abs(e.getBoundingClientRect().top - rtop);
+        if (dis < min_dis) {
+            current = e;
+            min_dis = dis;
         }
-    }
+    });
 
-    var hrect = headings.at(i)?.getBoundingClientRect();
-    if (hrect && rbottom >= hrect.top) {
-        current = headings[i];
+    if (current) {
         setActive(current.id);
     }
 }
@@ -141,7 +136,7 @@ function trafficLimitedUpdateActive() {
 
 document.addEventListener("astro:page-load", () => {
 
-    tocItems.clear();
+    toc_items.clear();
 
     headings = Array.from(
         document.querySelectorAll<HeadingEl>(
@@ -153,7 +148,7 @@ document.addEventListener("astro:page-load", () => {
         .forEach(a => {
             const id = a.getAttribute('id')?.slice(4)
             if (id) {
-                tocItems.set(id, a)
+                toc_items.set(id, a)
             }
         });
     
