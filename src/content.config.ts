@@ -34,9 +34,9 @@ const musics = defineCollection({
     schema: z.object({
         name: z.string(),
         artist: z.string(),
-        url: z.string().transform(v => "/" + joinPath(SITE_CONFIG.base, v)),
-        cover: z.string().transform(v => "/" + joinPath(SITE_CONFIG.base, v)),
-        lrc: z.string().default("").transform(v => "/" + joinPath(SITE_CONFIG.base, v))
+        url: z.string().transform(v => joinPath(SITE_CONFIG.cdn, v)),
+        cover: z.string().transform(v => joinPath(SITE_CONFIG.cdn, v)),
+        lrc: z.string().optional().transform(v => v ? joinPath(SITE_CONFIG.cdn, v) : undefined)
     })
 });
 
