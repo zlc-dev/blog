@@ -1,6 +1,7 @@
 type SiteConfig = {
     site: string;
     base: string;
+    cdn: string;
     giscus: {
         data_repo: string,
         data_repo_id: string,
@@ -12,6 +13,7 @@ type SiteConfig = {
 export const SITE_CONFIG = {
     site: "https://zlc-dev.github.io",
     base: "/blog",
+    cdn: "https://assets.h4zptr.top",
     giscus: {
         data_repo: "zlc-dev/blog",
         data_repo_id: "R_kgDOQvQ5cA",
