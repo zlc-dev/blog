@@ -102,7 +102,7 @@ export function setTheme(theme: ThemeName) {
 }
 
 export function firstSetTheme() {
-    var theme = localStorage.getItem("theme");
+    let theme = localStorage.getItem("theme");
     if (!(theme && theme in THEMES)) {
         theme = matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"

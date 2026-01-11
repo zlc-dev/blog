@@ -23,3 +23,7 @@ import APlayer from '../components/APlayer.astro';
     <slot />
 </body>
 
+<script>
+import { firstSetTheme } from "../theme";
+document.addEventListener("astro:page-load", firstSetTheme);
+</script>
