@@ -11,6 +11,7 @@ import Pagination from "../../../components/Pagination.astro";
 import { getRelativePath } from "../../../utils";
 import Layout from "../../../layouts/Layout.astro";
 import { getPosts } from "../../../utils/posts";
+import { SITE_CONFIG } from "../../../site_config";
 
 export const getStaticPaths = (async ({ paginate }) => {
     const posts = (await getPosts()).sort((a, b) => (b.main.data.published.getTime() - a.main.data.published.getTime()));
@@ -35,7 +36,7 @@ const { locale } = Astro.params;
     <title>{i18n(locale, I18nKey.site_name)}</title>
 </head>
 <Layout>
-    <Header title={ i18n(locale, I18nKey.welcome) } data-pagefind-ignore />
+    <Header title={ i18n(locale, I18nKey.welcome) } background={SITE_CONFIG.apperance.banner_background} data-pagefind-ignore />
     <MenuBar locale={locale} transparent="at-top" />
     <section class="post-list-container">
         <div style="width: 80%;">

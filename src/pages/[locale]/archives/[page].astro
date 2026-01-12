@@ -12,6 +12,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { getRelativePath } from "../../../utils";
 import { getPosts } from "../../../utils/posts";
 import Layout from "../../../layouts/Layout.astro";
+import { SITE_CONFIG } from "../../../site_config";
 
 export const getStaticPaths = (async ({ paginate }) => {
     const posts = (await getPosts()).sort((a, b) => (b.main.data.published.getTime() - a.main.data.published.getTime()));
@@ -46,7 +47,7 @@ const grouped_page = page.data.reduce<Map<number, CollectionEntry<"posts">[]>>((
     <title>{i18n(locale, I18nKey.site_name)}</title>
 </head>
 <Layout>    
-    <Header title={ i18n(locale, I18nKey.archive) } banner_height={60} data-pagefind-ignore />
+    <Header title={ i18n(locale, I18nKey.archive) } background={SITE_CONFIG.apperance.banner_background} banner_height={60} data-pagefind-ignore />
     <MenuBar locale={locale} transparent="at-top" />
     <section class="archives-list-container" data-pagefind-ignore>
         <div class="archives-list">
