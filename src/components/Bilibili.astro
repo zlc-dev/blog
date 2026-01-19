@@ -1,0 +1,19 @@
+---
+
+interface Props {
+    bvid: string;
+    ratio?: number;
+};
+
+const { bvid, ratio = 16 / 9 } = Astro.props;
+
+---
+<div style="width: 100%; margin: 2rem 0; display: flex; justify-content: center;">
+    <iframe
+    src={`https://player.bilibili.com/player.html?bvid=${bvid}`}
+    width="100%"
+    frameborder="0"
+    style=`border:none; aspect-ratio: ${ratio};`
+    allowfullscreen
+    ></iframe>
+</div>

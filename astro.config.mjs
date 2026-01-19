@@ -6,6 +6,8 @@ import pagefind from 'astro-pagefind';
 import icon from 'astro-icon';
 import { SITE_CONFIG } from './src/site_config.ts';
 
+import mdx from "@astrojs/mdx";
+
 const ASTRO_ICON_OPTS = {
   include: {
     heroicons: ["*"],
@@ -28,5 +30,5 @@ export default defineConfig({
       fallbackType: "redirect"
     },
   },
-  integrations: [pagefind(), icon(ASTRO_ICON_OPTS)],
+  integrations: [pagefind(), icon(ASTRO_ICON_OPTS), mdx()],
 });
