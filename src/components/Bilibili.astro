@@ -11,10 +11,13 @@ const { bvid, ratio = 16 / 9, danmaku = true } = Astro.props;
 ---
 <div style="width: 100%; margin: 2rem 0; display: flex; justify-content: center;">
     <iframe
-    src={`https://player.bilibili.com/player.html?bvid=${bvid}&autoplay=0&danmaku=${danmaku ? 1 : 0}`}
+    src={`https://player.bilibili.com/player.html?isOutside=true&bvid=${bvid}&autoplay=0&danmaku=${danmaku ? 1 : 0}`}
     width="100%"
-    frameborder="0"
+    scrolling="no" 
+    border="0" 
+    frameborder="no" 
+    framespacing="0"
     style=`border:none; aspect-ratio: ${ratio};`
-    allowfullscreen
+    allowfullscreen="true"
     ></iframe>
 </div>
