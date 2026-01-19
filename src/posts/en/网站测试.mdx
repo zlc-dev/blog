@@ -6,6 +6,9 @@ tags: ["Test", "Example"]
 license: CC BY-NC
 ---
 
+import Youtube from "../../components/Youtube.astro";
+import APlayerInlined from "../../components/APlayerInlined.astro";
+
 # Website Test Page
 
 This is a **test page** used to verify that the Astro project and Markdown rendering are working correctly.
@@ -16,6 +19,7 @@ This is a **test page** used to verify that the Astro project and Markdown rende
 - [x] Bold and italic text
 - [x] List rendering
 - [x] Links and images
+- [x] Custom Components
 
 ### Link Test
 
@@ -37,3 +41,25 @@ int main()
 }
 
 ```
+
+### Components Test
+
+---
+- Youtube Video
+
+<Youtube id="ABlYBn7Jo38" />
+
+---
+- Aplayer Music
+
+<APlayerInlined lrc_type={3} audio={[
+    {
+        name: "Bohemian Rhapsody (Remastered 2011)", 
+        artist: "Queen", 
+        url: "https://assets.h4zptr.top/music/Queen - Bohemian Rhapsody (Remastered 2011).mp3",
+        cover: "https://assets.h4zptr.top/music/cover/Queen - Bohemian Rhapsody.jpg",
+        lrc: "https://assets.h4zptr.top/music/lrc/Queen - Bohemian Rhapsody (Remastered 2011).lrc",
+    }
+]} />
+
+

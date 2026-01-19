@@ -1,5 +1,6 @@
 ---
 import 'aplayer/dist/APlayer.min.css';
+import '../styles/aplayer.css'
 ---
 
 <div
@@ -14,108 +15,18 @@ import 'aplayer/dist/APlayer.min.css';
     }
 </style>
 
-<style is:global>
-
-
-.aplayer .aplayer-body {
-    bottom: 1rem;
-    background: var(--color-bg-surface) !important;
-    border-radius: 0 2px 2px 0 !important;
-
-}
-
-.aplayer .aplayer-info {
-    border-top: 1px solid var(--color-bg-dialog) !important;
-    border-right: 1px solid var(--color-bg-dialog) !important;
-}
-
-.aplayer .aplayer-info .aplayer-music {
-    color: var(--color-text-muted) !important;
-}
-
-.aplayer .aplayer-info .aplayer-music .aplayer-title {
-    color: var(--color-text-primary) !important;
-}
-
-.aplayer .aplayer-info .aplayer-music .aplayer-author {
-    color: var(--color-text-muted) !important;
-}
-
-.aplayer .aplayer-info .aplayer-controller .aplayer-time {
-    color: var(--color-text-muted) !important;
-}
-
-.aplayer .aplayer-icon {
-    opacity: 1 !important;
-}
-
-.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon path {
-    fill: var(--color-text-muted) !important;
-}
-
-.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon:hover path {
-    fill: var(--color-accent) !important;
-}
-
-.aplayer .aplayer-miniswitcher .aplayer-icon:hover path {
-    fill: var(--color-accent) !important;
-}
-
-.aplayer .aplayer-miniswitcher {
-    border-top: 1px solid var(--color-bg-dialog) !important;
-    border-right: 1px solid var(--color-bg-dialog) !important;
-    background: transparent !important;
-}
-
-.aplayer.aplayer-fixed .aplayer-lrc {
-    bottom: 2rem;
-    text-shadow: 0 0 3px var(--color-bg-surface) !important;
-}
-
-.aplayer .aplayer-lrc {
-    text-shadow: 0 0 3px var(--color-bg-surface) !important;
-}
-
-.aplayer .aplayer-lrc p {
-    color: var(--color-accent) !important;
-    font-size: 1rem !important;
-}
-
-.aplayer .aplayer-list {
-    background: var(--color-bg-surface) !important;
-    color: var(--color-text-primary) !important;
-}
-
-.aplayer .aplayer-list ol li.aplayer-list-light {
-    background: var(--color-bg-surface) !important;
-    color: var(--color-accent) !important;
-}
-
-.aplayer.aplayer-fixed .aplayer-list {
-    border: none !important;
-}
-
-.aplayer .aplayer-list ol li {
-    border-top: 1px solid var(--color-bg-dialog) !important;
-}
-
-.aplayer .aplayer-list ol li:hover {
-    background: var(--color-bg-dialog) !important;
-}
-
-.aplayer .aplayer-list ol li .aplayer-list-author {
-    color: var(--color-text-muted) !important;
-}
-
-</style>
-
 <script >
 
 import { mountAplayer } from "../utils/aplayer.ts"
 
 document.addEventListener('astro:page-load', async () => {
     let playerContainer = document.querySelector<HTMLDivElement>('.player-container');
-    await mountAplayer(playerContainer);
+    if (playerContainer) {
+        let ap = await mountAplayer(playerContainer);
+        ap.lrc.hide();
+        let lrc_button = playerContainer.querySelector<HTMLButtonElement>('button.aplayer-icon.aplayer-icon-lrc');
+        lrc_button?.classList.add("aplayer-icon-lrc-inactivity");
+    }
 }, false);
 
 </script>

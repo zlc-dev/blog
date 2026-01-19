@@ -1,0 +1,167 @@
+.aplayer.aplayer-fixed .aplayer-body {
+    background: var(--color-bg-surface) !important;
+    border-radius: 0 2px 2px 0 !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-info {
+    border-top: 1px solid var(--color-bg-dialog) !important;
+    border-right: 1px solid var(--color-bg-dialog) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-info .aplayer-music {
+    color: var(--color-text-muted) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-info .aplayer-music .aplayer-title {
+    color: var(--color-text-primary) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-info .aplayer-music .aplayer-author {
+    color: var(--color-text-muted) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-info .aplayer-controller .aplayer-time {
+    color: var(--color-text-muted) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-icon {
+    opacity: 1 !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon path {
+    fill: var(--color-text-muted) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon:hover path {
+    fill: var(--color-accent) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-miniswitcher .aplayer-icon:hover path {
+    fill: var(--color-accent) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-miniswitcher {
+    border-top: 1px solid var(--color-bg-dialog) !important;
+    border-right: 1px solid var(--color-bg-dialog) !important;
+    background: transparent !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-lrc {
+    bottom: 2rem;
+    text-shadow: 0 0 3px var(--color-bg-surface) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-lrc {
+    text-shadow: 0 0 3px var(--color-bg-surface) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-lrc p {
+    color: var(--color-accent) !important;
+    font-size: 1rem !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-list {
+    background: var(--color-bg-surface) !important;
+    color: var(--color-text-primary) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-list ol li.aplayer-list-light {
+    background: var(--color-bg-surface) !important;
+    color: var(--color-accent) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-list {
+    border: none !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-list ol li {
+    border-top: 1px solid var(--color-bg-dialog) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-list ol li:hover {
+    background: var(--color-bg-dialog) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-list ol li .aplayer-list-author {
+    color: var(--color-text-muted) !important;
+}
+
+.aplayer .aplayer-body {
+    background: var(--color-bg-surface) !important;
+    border: 1px solid var(--color-bg-dialog) !important;
+    border-radius: 0 2px 2px 0 !important;
+}
+
+.aplayer .aplayer-info .aplayer-music {
+    color: var(--color-text-muted) !important;
+}
+
+.aplayer .aplayer-info .aplayer-music .aplayer-title {
+    color: var(--color-text-primary) !important;
+}
+
+.aplayer .aplayer-info .aplayer-music .aplayer-author {
+    color: var(--color-text-muted) !important;
+}
+
+.aplayer .aplayer-info .aplayer-controller .aplayer-time {
+    color: var(--color-text-muted) !important;
+}
+
+.aplayer .aplayer-icon {
+    opacity: 1 !important;
+}
+
+.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon path {
+    fill: var(--color-text-muted) !important;
+}
+
+.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon:hover path {
+    fill: var(--color-accent) !important;
+}
+
+.aplayer .aplayer-lrc::before {
+    background: linear-gradient(0deg, transparent, var(--color-bg-surface));
+}
+
+.aplayer .aplayer-lrc::after {
+    background: linear-gradient(180deg, transparent, var(--color-bg-surface));
+}
+
+.aplayer .aplayer-lrc p {
+    color: var(--color-accent) !important;
+}
+
+
+.aplayer.aplayer-withlist .aplayer-info {
+    border-bottom: 1px solid var(--color-bg-dialog);
+}
+
+.aplayer .aplayer-list {
+    background: var(--color-bg-surface) !important;
+    color: var(--color-text-primary) !important;
+}
+
+.aplayer .aplayer-list ol li.aplayer-list-light {
+    background: var(--color-bg-surface) !important;
+    color: var(--color-accent) !important;
+}
+
+.aplayer .aplayer-list {
+    border: none !important;
+}
+
+.aplayer .aplayer-list ol li {
+    border-top: none;
+    border-bottom: 1px solid var(--color-bg-dialog) !important;
+    border-left: 1px solid var(--color-bg-dialog) !important;
+    border-right: 1px solid var(--color-bg-dialog) !important;
+}
+
+.aplayer .aplayer-list ol li:hover {
+    background: var(--color-bg-dialog) !important;
+}
+
+.aplayer .aplayer-list ol li .aplayer-list-author {
+    color: var(--color-text-muted) !important;
+}

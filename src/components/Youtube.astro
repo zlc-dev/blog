@@ -1,17 +1,15 @@
 ---
-
 interface Props {
-    bvid: string;
+    id: string;
     ratio?: number;
-    danmaku?: boolean;
 };
 
-const { bvid, ratio = 16 / 9, danmaku = true } = Astro.props;
+const { id, ratio = 16 / 9 } = Astro.props;
 
 ---
 <div style="width: 100%; margin: 2rem 0; display: flex; justify-content: center;">
     <iframe
-    src={`https://player.bilibili.com/player.html?bvid=${bvid}&autoplay=0&danmaku=${danmaku ? 1 : 0}`}
+    src={`https://www.youtube.com/embed/${id}`}
     width="100%"
     frameborder="0"
     style=`border:none; aspect-ratio: ${ratio};`

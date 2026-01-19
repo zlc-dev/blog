@@ -6,6 +6,9 @@ tags: ["测试", "示例"]
 license: CC BY-NC
 ---
 
+import Bilibili from "../components/Bilibili.astro";
+import APlayerInlined from "../components/APlayerInlined.astro"
+
 # 网站测试页面
 
 这是一个 **测试页面**，用于验证 Astro 项目和 Markdown 渲染是否正常。
@@ -16,6 +19,7 @@ license: CC BY-NC
 - [x] 粗体和斜体
 - [x] 列表渲染
 - [x] 链接和图片
+- [x] 自定义组件
 
 ### 链接测试
 
@@ -37,3 +41,22 @@ int main()
 }
 
 ```
+
+### 组件测试
+
+---
+- Bilibili 视频
+<Bilibili bvid="BV1CnKLz1Ez2" />
+
+---
+- Aplayer 音频
+
+<APlayerInlined lrc_type={3} audio={[
+    {
+        name: "波西米亚狂想抽", 
+        artist: "丁斯塔科维奇", 
+        url: "https://assets.h4zptr.top/music/丁斯塔科维奇 - 波西米亚狂想抽.mp3",
+        cover: "https://assets.h4zptr.top/music/cover/丁斯塔科维奇 - 波西米亚狂想抽.jpg",
+        lrc: "https://assets.h4zptr.top/music/lrc/丁斯塔科维奇 - 波西米亚狂想抽.lrc",
+    }
+]} />

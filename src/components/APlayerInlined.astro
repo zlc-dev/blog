@@ -1,0 +1,36 @@
+---
+import type { AplayerAudio } from '../utils/aplayer';
+import '../styles/aplayer.css'
+
+interface Props {
+    lrc_type: 1 | 2 | 3;
+    audio: AplayerAudio[];
+};
+
+const { lrc_type, audio } = Astro.props;
+const id = `aplayer-${crypto.randomUUID()}`;
+---
+<div
+    id={id} class="player-container"
+></div>
+
+<style>
+    .player-container {
+        background: transparent;
+    }
+</style>
+
+<script type="module" define:vars={{lrc_type, audio, id}} is:inline>
+    import 'https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js';
+    const container = document.getElementById(id);
+    if (container) {
+        let ap = new APlayer({
+            container: container,
+            audio: audio,
+            autoplay: false,
+            lrcType: lrc_type,
+            theme: "var(--color-accent)"
+        });
+    }
+</script>
+
