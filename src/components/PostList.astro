@@ -1,7 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { DEFAULT_LANGUAGE, type SupportedLanguages } from "../i18n_config.ts";
-import { getSummary } from "../utils/summary";
+import { getMDXSummary } from "../utils/summary";
 import type { PostType } from "../utils/posts";
 
 interface Props {
@@ -13,8 +13,8 @@ const posts = Astro.props.posts;
 const locale = Astro.props.locale ?? DEFAULT_LANGUAGE;
 ---
 <body>
-    <ul class="post-list">{posts.map(raw_post => {
-        let post = raw_post.i18n[locale]!;
+    <ul class="post-list">{posts.map(async raw_post => {
+        const post = raw_post.i18n[locale]!;
         return (
         <li class="post-card">
             <div >
@@ -23,7 +23,7 @@ const locale = Astro.props.locale ?? DEFAULT_LANGUAGE;
                 </a>
                 <div style="margin: 1em 0;">
                     <a href={getRelativeLocaleUrl(locale, `posts/${raw_post.main.id}`)}>
-                        <span class="post-snippet">{ post.data.summary ?? getSummary(post.body?.slice(0, 500) ?? "", 200) }</span>
+                        <span class="post-snippet">{ post.data.summary ?? getMDXSummary(post.body ?? "") }</span>
                     </a>
                 </div>
 
