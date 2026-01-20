@@ -28,6 +28,7 @@ export class PlayerManager {
             const cacheable = Boolean(container.dataset.cacheable);
             const cached = this.cache.get(id);
             if (cached && cacheable) {
+                container.innerHTML = '';
                 container.appendChild(cached.container);
                 (container as any)._player = cached;
             } else {
@@ -41,7 +42,6 @@ export class PlayerManager {
      */
     destroy() {
         if (!this.containers.length) return;
-
         for (const container of this.containers) {
             const id = container.id;
             const cacheable = Boolean(container.dataset.cacheable);

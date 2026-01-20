@@ -1,6 +1,6 @@
 ---
-import { SITE_CONFIG } from '../site_config';
-import { getRelativePath } from '../utils';
+import { createHash } from "node:crypto";
+import { getRelativePath } from "../utils";
 
 interface Props {
     id?: string;
@@ -14,33 +14,35 @@ interface Props {
 const { id: id_, video, cacheable = false } = Astro.props;
 
 const id = id_ ?? import.meta.env.DEV ? 
-    `dplayer-dev`
+    `dplayer-${createHash("sha1").update(JSON.stringify(video)).digest("hex")}`
     : `dplayer-${crypto.randomUUID()}`;
 
 
 ---
-<link rel="stylesheet" href={getRelativePath("/styles/DPlayer.min.css")}>
+<link rel="stylesheet" href={ getRelativePath("/styles/DPlayer.min.css") }/>
 <div
     id={id} class="dplayer-container"
     data-video={JSON.stringify(video)}
     data-cacheable={cacheable}
-></div>
+>
+<div style="display: flex; justify-content: center;"><h1>DPlayer Loading...</h1><div>
+</div>
 
 <style>
-    .dplayer-inlined-container {
+    .dplayer-container {
         background: transparent;
         width: 100%;
     }
 </style>
 
-
 <script>
-import { PlayerManager } from "../utils/player_manager.ts";
 import DPlayer from "dplayer";
+import { PlayerManager } from "../utils/player_manager.ts";
 import { getLocaleFromUrl } from "../utils.ts"
 import { DEFAULT_LANGUAGE } from "../i18n_config";
 
 const dplayerManager = new PlayerManager(4);
+
 document.addEventListener("astro:page-load", () => {
     dplayerManager.destroy();
     dplayerManager.init(".dplayer-container", (container) => new DPlayer({
@@ -52,5 +54,3 @@ document.addEventListener("astro:page-load", () => {
 });
 
 </script>
-</script>
-

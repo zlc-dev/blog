@@ -26,17 +26,19 @@ const id =
     data-audio={JSON.stringify(audio)}
     data-cacheable={cacheable}
 >
+<div style="display: flex; justify-content: center;"><h1>APlayer Loading...</h1><div>
 </div>
 
 <style>
     .aplayer-container {
         background: transparent;
+        width: 100%;
     }
 </style>
 
 <script>
-import { PlayerManager } from "../utils/player_manager";
 import APlayer from "aplayer";
+import { PlayerManager } from "../utils/player_manager";
 
 const aplayerManager = new PlayerManager(8);
 document.addEventListener("astro:page-load", () => {

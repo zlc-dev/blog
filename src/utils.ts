@@ -25,7 +25,6 @@ export function getLocaleFromUrl(url: string, base: string = SITE_CONFIG.base): 
     const u = new URL(url);
     base = base.replaceAll('/', '');
     const segments = u.pathname.split('/').filter(Boolean);
-    console.log(segments);
     if (base) {
         if (segments[0] !== base) return null;
         return segments[1] ?? null;
