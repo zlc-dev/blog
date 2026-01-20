@@ -7,7 +7,9 @@ license: CC BY-NC
 ---
 
 import Youtube from "../../components/Youtube.astro";
-import APlayerInlined from "../../components/APlayerInlined.astro";
+import APlayer from "../../components/APlayer.astro";
+import DPlayer from "../../components/DPlayer.astro"
+import { getRelativePath } from "../../utils";
 
 # Website Test Page
 
@@ -50,9 +52,9 @@ int main()
 <Youtube id="ABlYBn7Jo38" />
 
 ---
-- Aplayer Music
+- APlayer Music
 
-<APlayerInlined lrc_type={3} audio={[
+<APlayer lrc_type={3} audio={[
     {
         name: "Bohemian Rhapsody (Remastered 2011)", 
         artist: "Queen", 
@@ -63,3 +65,7 @@ int main()
 ]} />
 
 
+---
+- DPlayer Video
+
+<DPlayer video={{url: getRelativePath('videos/demo.mp4')}}/>

@@ -1,9 +1,9 @@
-import APlayer from 'aplayer';
-import { DEFAULT_THEME, THEMES } from '../theme';
 import { getRelativePath } from '../utils';
+import APlayer from 'aplayer';
 
 let ap: any | null = null;
 export async function mountAplayer(container: HTMLElement) {
+
     if (!ap) {
         const audio = await fetch(getRelativePath('/api/music-list.json')).then(r => r.json());
         ap = new APlayer({
@@ -29,14 +29,3 @@ export type AplayerAudio = {
     theme?: string;        // 单曲主题色
     type?: 'auto' | 'hls' | 'normal'; // 音频类型
 };
-
-export async function createAplayer(container: HTMLElement, audio: AplayerAudio[]) {
-    return new APlayer({
-        container: container,
-        autoplay: false,
-        fixed: true,
-        lrcType: 3,
-        audio: audio,
-        theme: "var(--color-accent)"
-    });
-}

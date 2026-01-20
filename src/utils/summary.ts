@@ -10,7 +10,8 @@ type MDXSummaryOptions = {
 
 export function getMDXSummary(
     mdxSource: string,
-    options: MDXSummaryOptions = {}
+    options: MDXSummaryOptions = {},
+    ellipsis: boolean = true
 ): string {
     const {
         maxLength = 300,
@@ -25,7 +26,7 @@ export function getMDXSummary(
 
     const blocks: string[] = [];
 
-    walk(ast, 
+    const ctx = walk(ast, 
         {
             maxLength,
             paragraphLimit,
@@ -34,12 +35,16 @@ export function getMDXSummary(
         blocks
     );
 
+    if (ctx.done && ellipsis) {
+        blocks.push('...');
+    }
+
     const result = blocks
         .join(' ')
         .replace(/\s+/g, ' ')
         .trim();
 
-    return result.slice(0, maxLength);
+    return result;
 }
 
 type WalkContext = {

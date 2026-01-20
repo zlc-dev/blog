@@ -1,0 +1,33 @@
+---
+import '../styles/aplayer.css'
+import 'aplayer/dist/APlayer.min.css';
+---
+
+<div
+    class="aplayer-global-container"
+></div>
+
+<style>
+    .aplayer-global-container {
+        background: transparent;
+        border-top: none  !important;
+        box-shadow: none  !important;
+    }
+</style>
+
+<script >
+
+import { mountAplayer } from "../utils/aplayer.ts"
+
+document.addEventListener('astro:page-load', async () => {
+    let playerContainer = document.querySelector<HTMLDivElement>('.aplayer-global-container');
+    if (playerContainer) {
+        let ap = await mountAplayer(playerContainer);
+        ap.lrc.hide();
+        let lrc_button = playerContainer.querySelector<HTMLButtonElement>('button.aplayer-icon.aplayer-icon-lrc');
+        lrc_button?.classList.add("aplayer-icon-lrc-inactivity");
+    }
+}, false);
+
+</script>
+

@@ -7,7 +7,9 @@ license: CC BY-NC
 ---
 
 import Bilibili from "../components/Bilibili.astro";
-import APlayerInlined from "../components/APlayerInlined.astro"
+import APlayer from "../components/APlayer.astro"
+import DPlayer from "../components/DPlayer.astro"
+import { getRelativePath } from "../utils";
 
 # 网站测试页面
 
@@ -49,9 +51,9 @@ int main()
 <Bilibili bvid="BV1CnKLz1Ez2" />
 
 ---
-- Aplayer 音频
+- APlayer 音频
 
-<APlayerInlined lrc_type={3} audio={[
+<APlayer lrc_type={3} audio={[
     {
         name: "波西米亚狂想抽", 
         artist: "丁斯塔科维奇", 
@@ -60,3 +62,8 @@ int main()
         lrc: "https://assets.h4zptr.top/music/lrc/丁斯塔科维奇 - 波西米亚狂想抽.lrc",
     }
 ]} />
+
+---
+- DPlayer 视频
+
+<DPlayer video={{url: getRelativePath('videos/demo.mp4')}}/>

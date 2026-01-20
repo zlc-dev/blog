@@ -1,33 +1,53 @@
 ---
-import 'aplayer/dist/APlayer.min.css';
-import '../styles/aplayer.css'
+import type { AplayerAudio } from "../utils/aplayer";
+import { createHash } from "node:crypto";
+import "../styles/aplayer.css";
+import "aplayer/dist/APlayer.min.css";
+
+interface Props {
+    lrc_type: 1 | 2 | 3;
+    audio: AplayerAudio[];
+    id?: string;
+    cacheable?: boolean;
+}
+
+const { lrc_type, audio, id: id_, cacheable = true } = Astro.props;
+
+const id =
+    (id_ ?? import.meta.env.DEV)
+        ? `aplayer-${createHash("sha1").update(JSON.stringify(audio)).digest("hex")}`
+        : `aplayer-${crypto.randomUUID()}`;
 ---
 
 <div
-    class="player-container"
-></div>
+    id={id}
+    class="aplayer-container"
+    data-lrc-type={lrc_type}
+    data-audio={JSON.stringify(audio)}
+    data-cacheable={cacheable}
+>
+</div>
 
 <style>
-    .player-container {
+    .aplayer-container {
         background: transparent;
-        border-top: none  !important;
-        box-shadow: none  !important;
     }
 </style>
 
-<script >
+<script>
+import { PlayerManager } from "../utils/player_manager";
+import APlayer from "aplayer";
 
-import { mountAplayer } from "../utils/aplayer.ts"
-
-document.addEventListener('astro:page-load', async () => {
-    let playerContainer = document.querySelector<HTMLDivElement>('.player-container');
-    if (playerContainer) {
-        let ap = await mountAplayer(playerContainer);
-        ap.lrc.hide();
-        let lrc_button = playerContainer.querySelector<HTMLButtonElement>('button.aplayer-icon.aplayer-icon-lrc');
-        lrc_button?.classList.add("aplayer-icon-lrc-inactivity");
-    }
-}, false);
-
+const aplayerManager = new PlayerManager(8);
+document.addEventListener("astro:page-load", () => {
+    aplayerManager.destroy();
+    aplayerManager.init(".aplayer-container", (container) => new APlayer({
+            container: container,
+            audio: JSON.parse(container.dataset.audio ?? "[]"),
+            lrcType: Number(container.dataset.lrcType ?? 0),
+            autoplay: false,
+            theme: "var(--color-accent)",
+        })
+    );
+});
 </script>
-

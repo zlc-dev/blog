@@ -1,0 +1,3 @@
+# 忽略压缩产物
+*.min.js linguist-generated=true
+*.min.css linguist-generated=true

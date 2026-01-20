@@ -121,11 +121,11 @@
 }
 
 .aplayer .aplayer-lrc::before {
-    background: linear-gradient(0deg, transparent, var(--color-bg-surface));
+    background: linear-gradient(0deg, transparent, var(--color-bg-surface)) !important;
 }
 
 .aplayer .aplayer-lrc::after {
-    background: linear-gradient(180deg, transparent, var(--color-bg-surface));
+    background: linear-gradient(180deg, transparent, var(--color-bg-surface)) !important;
 }
 
 .aplayer .aplayer-lrc p {
@@ -134,7 +134,7 @@
 
 
 .aplayer.aplayer-withlist .aplayer-info {
-    border-bottom: 1px solid var(--color-bg-dialog);
+    border-bottom: 1px solid var(--color-bg-dialog) !important;
 }
 
 .aplayer .aplayer-list {
@@ -152,7 +152,7 @@
 }
 
 .aplayer .aplayer-list ol li {
-    border-top: none;
+    border-top: none !important;
     border-bottom: 1px solid var(--color-bg-dialog) !important;
     border-left: 1px solid var(--color-bg-dialog) !important;
     border-right: 1px solid var(--color-bg-dialog) !important;
