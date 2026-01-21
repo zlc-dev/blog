@@ -7,8 +7,8 @@ interface Player {
 }
 
 export class PlayerManager<T extends Player> {
-    private readonly retired: LRUPool<string, T>;
     private cntr_players: [HTMLElement, T][] = [];
+    readonly retired: LRUPool<string, T>;
     readonly selector: string;
     readonly ctor: (container: HTMLElement, dataset: DOMStringMap) => T;
 
@@ -18,13 +18,11 @@ export class PlayerManager<T extends Player> {
      * @param ctor 回调生成播放器选项，container是用来装载Player的容器，每个container可以不同, dataset是 容器选择器 选中的元素的
      * @param retired 缓存被淘汰的Player的池 或者 共用一个已有的PlayerManager 的缓存 或者一个新缓存池的大小
      */
-    public constructor(selector: string, ctor: (container: HTMLElement, dataset: DOMStringMap) => T, retired: LRUPool<string, T> | PlayerManager<T> | number = 4) {
+    public constructor(selector: string, ctor: (container: HTMLElement, dataset: DOMStringMap) => T, retired: LRUPool<string, T> | number = 4) {
         this.selector = selector;
         this.ctor = ctor;
         if (typeof retired === 'number') {
         this.retired = new LRUPool(retired);
-        } else if ('retired' in retired) {
-            this.retired = retired.retired;
         } else {
             this.retired = retired;
         }
