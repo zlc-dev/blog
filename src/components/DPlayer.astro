@@ -6,6 +6,8 @@ interface Props {
     id?: string;
     video: {
         url: string;
+        pic?: string;
+        thumbnails?: string;
     };
     cacheable?: boolean;
 
@@ -45,10 +47,12 @@ const dplayerManager = new PlayerManager(4);
 
 document.addEventListener("astro:page-load", () => {
     dplayerManager.destroy();
-    dplayerManager.init(".dplayer-container", (container) => new DPlayer({
+    dplayerManager.init(".dplayer-container", (container, dataset) => new DPlayer({
             container,
-            video: JSON.parse(container.dataset.video ?? "[]"),
+            video: JSON.parse(dataset.video ?? "[]"),
             lang: getLocaleFromUrl(window.location.href) ?? DEFAULT_LANGUAGE,
+            theme: "var(--color-accent)",
+            screenshot: true,
         })
     );
 });

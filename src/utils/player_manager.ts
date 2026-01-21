@@ -19,21 +19,23 @@ export class PlayerManager {
      * @param selector 容器选择器
      * @param getPlayerOptions 回调生成播放器选项，每个 container 可以不同
      */
-    init(selector: string, ctor: (container: HTMLElement) => Player) {
+    init(selector: string, ctor: (container: HTMLElement, dataset: DOMStringMap) => Player) {
         this.containers = [...document.querySelectorAll<HTMLElement>(selector)];
         if (!this.containers.length) return;
 
         for (const container of this.containers) {
             const id = container.id;
             const cacheable = Boolean(container.dataset.cacheable);
-            const cached = this.cache.get(id);
-            if (cached && cacheable) {
-                container.innerHTML = '';
-                container.appendChild(cached.container);
-                (container as any)._player = cached;
+            container.innerHTML = '';
+            let player = cacheable ? this.cache.get(id) : null;
+            if (player) {
+                container.appendChild(player.container);
             } else {
-                (container as any)._player = ctor(container);
+                let child = document.createElement('div');
+                container.appendChild(child);
+                player = ctor(child, container.dataset);
             }
+            (container as any)._player = player;
         }
     }
 

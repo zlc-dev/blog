@@ -34,12 +34,5 @@ export default defineConfig({
   integrations: [pagefind(), icon(ASTRO_ICON_OPTS), mdx()],
   experimental: {
     contentIntellisense: true,
-  },
-  vite: {
-    resolve: {
-      alias: {
-        '@': getRelativePath("/")
-      }
-    },
   }
 });

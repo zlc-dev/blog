@@ -43,11 +43,10 @@ import { PlayerManager } from "../utils/player_manager";
 const aplayerManager = new PlayerManager(8);
 document.addEventListener("astro:page-load", () => {
     aplayerManager.destroy();
-    aplayerManager.init(".aplayer-container", (container) => new APlayer({
-            container: container,
-            audio: JSON.parse(container.dataset.audio ?? "[]"),
-            lrcType: Number(container.dataset.lrcType ?? 0),
-            autoplay: false,
+    aplayerManager.init(".aplayer-container", (container, dataset) => new APlayer({
+            container,
+            audio: JSON.parse(dataset.audio ?? "[]"),
+            lrcType: Number(dataset.lrcType ?? 0),
             theme: "var(--color-accent)",
         })
     );

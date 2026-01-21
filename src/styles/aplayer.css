@@ -1,3 +1,7 @@
+.aplayer.aplayer-fixed {
+    background: transparent !important;
+}
+
 .aplayer.aplayer-fixed .aplayer-body {
     background: var(--color-bg-surface) !important;
     border-radius: 0 2px 2px 0 !important;

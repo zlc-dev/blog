@@ -6,18 +6,30 @@ import 'aplayer/dist/APlayer.min.css';
 <div
     class="aplayer-global-container"
 ></div>
-
-<style>
-    .aplayer-global-container {
-        background: transparent;
-        border-top: none  !important;
-        box-shadow: none  !important;
-    }
-</style>
-
 <script >
+import { getRelativePath } from "../utils";
+import APlayer from "aplayer";
 
-import { mountAplayer } from "../utils/aplayer.ts"
+let ap: any | null = null;
+async function mountAplayer(container: HTMLElement) {
+    let child = document.createElement('div');
+    container.innerHTML = '';
+    if (!ap) {
+        container.appendChild(child);
+        const audio = await fetch(getRelativePath('/api/music-list.json')).then(r => r.json());
+        ap = new APlayer({
+            container: child,
+            autoplay: false,
+            fixed: true,
+            lrcType: 3,
+            audio: audio,
+            theme: "var(--color-accent)"
+        });
+    } else {
+        container.appendChild(ap.container);
+    }
+    return ap;
+}
 
 document.addEventListener('astro:page-load', async () => {
     let playerContainer = document.querySelector<HTMLDivElement>('.aplayer-global-container');
