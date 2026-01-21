@@ -13,7 +13,7 @@ interface Props {
 
 };
 
-const { id: id_, video, cacheable = false } = Astro.props;
+const { id: id_, video, cacheable = true } = Astro.props;
 
 const id = id_ ?? import.meta.env.DEV ? 
     `dplayer-${createHash("sha1").update(JSON.stringify(video)).digest("hex")}`
@@ -27,7 +27,9 @@ const id = id_ ?? import.meta.env.DEV ?
     data-video={JSON.stringify(video)}
     data-cacheable={cacheable}
 >
-<div style="display: flex; justify-content: center;"><h1>DPlayer Loading...</h1><div>
+    <div style="display: flex; justify-content: center;">
+        <h1>DPlayer Loading...</h1>
+    </div>
 </div>
 
 <style>
@@ -43,18 +45,20 @@ import { PlayerManager } from "../utils/player_manager.ts";
 import { getLocaleFromUrl } from "../utils.ts"
 import { DEFAULT_LANGUAGE } from "../i18n_config";
 
-const dplayerManager = new PlayerManager(4);
+const dplayerManager = new PlayerManager(
+    ".dplayer-container",
+    (container, dataset) => new DPlayer({
+        container,
+        video: JSON.parse(dataset.video ?? "[]"),
+        lang: getLocaleFromUrl(window.location.href) ?? DEFAULT_LANGUAGE,
+        theme: "var(--color-accent)",
+        screenshot: true,
+    }),
+    4
+);
 
 document.addEventListener("astro:page-load", () => {
-    dplayerManager.destroy();
-    dplayerManager.init(".dplayer-container", (container, dataset) => new DPlayer({
-            container,
-            video: JSON.parse(dataset.video ?? "[]"),
-            lang: getLocaleFromUrl(window.location.href) ?? DEFAULT_LANGUAGE,
-            theme: "var(--color-accent)",
-            screenshot: true,
-        })
-    );
+    dplayerManager.init();
 });
 
 </script>

@@ -1,5 +1,5 @@
-export class LRUCache<K, V> {
-    map: Map<K, {inner: V, ondestroy: () => void}>;
+export class LRUPool<K, V> {
+    private map: Map<K, {inner: V, ondestroy: () => void}>;
     readonly capacity: number;
 
     constructor(capacity = 8) {
@@ -7,11 +7,10 @@ export class LRUCache<K, V> {
         this.capacity = capacity;
     }
 
-    get(id: K) {
+    take(id: K): V | null {
         if (!this.has(id)) return null;
         const value = this.map.get(id)!;
         this.map.delete(id);
-        this.map.set(id, value);
         return value.inner;
     }
 
