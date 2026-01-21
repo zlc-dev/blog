@@ -29,7 +29,7 @@ const locale = Astro.props.locale ?? DEFAULT_LANGUAGE;
 
                 <div class="post-meta">
                     <time class="post-date" datetime={post.data.published.toISOString()}>
-                        {post.data.published.toLocaleDateString()}
+                        {post.data.published.toLocaleDateString(locale)}
                     </time>
 
                     {post.data.tags.length > 0 && (

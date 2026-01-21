@@ -17,7 +17,7 @@ export class PlayerManager {
     /**
      * 初始化指定选择器的播放器容器
      * @param selector 容器选择器
-     * @param getPlayerOptions 回调生成播放器选项，每个 container 可以不同
+     * @param ctor 回调生成播放器选项，每个 container 可以不同, dataset 是 容器选择器 选中的元素的
      */
     init(selector: string, ctor: (container: HTMLElement, dataset: DOMStringMap) => Player) {
         this.containers = [...document.querySelectorAll<HTMLElement>(selector)];
