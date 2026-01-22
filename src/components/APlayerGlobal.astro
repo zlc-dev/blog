@@ -25,6 +25,9 @@ async function mountAplayer(container: HTMLElement) {
             audio: audio,
             theme: "var(--color-accent)"
         });
+        ap.lrc.hide();
+        let lrc_button = (ap.container as HTMLElement).querySelector<HTMLButtonElement>('button.aplayer-icon.aplayer-icon-lrc');
+        lrc_button?.classList.add("aplayer-icon-lrc-inactivity");
     } else {
         container.appendChild(ap.container);
     }
@@ -34,10 +37,7 @@ async function mountAplayer(container: HTMLElement) {
 document.addEventListener('astro:page-load', async () => {
     let playerContainer = document.querySelector<HTMLDivElement>('.aplayer-global-container');
     if (playerContainer) {
-        let ap = await mountAplayer(playerContainer);
-        ap.lrc.hide();
-        let lrc_button = playerContainer.querySelector<HTMLButtonElement>('button.aplayer-icon.aplayer-icon-lrc');
-        lrc_button?.classList.add("aplayer-icon-lrc-inactivity");
+        await mountAplayer(playerContainer);
     }
 }, false);
 
