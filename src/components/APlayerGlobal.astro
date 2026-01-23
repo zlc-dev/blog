@@ -12,9 +12,9 @@ import APlayer from "aplayer";
 
 let ap: any | null = null;
 async function mountAplayer(container: HTMLElement) {
-    let child = document.createElement('div');
     container.innerHTML = '';
     if (!ap) {
+        let child = document.createElement('div');
         container.appendChild(child);
         const audio = await fetch(getRelativePath('/api/music-list.json')).then(r => r.json());
         ap = new APlayer({

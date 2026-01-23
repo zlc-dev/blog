@@ -1,6 +1,7 @@
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkMdx from 'remark-mdx';
+import remarkMath from 'remark-math';
 
 type MDXSummaryOptions = {
     maxLength?: number;      // 最大字符数
@@ -21,6 +22,7 @@ export function getMDXSummary(
 
     const ast = unified()
         .use(remarkParse)
+        .use(remarkMath)
         .use(remarkMdx)
         .parse(mdxSource);
 

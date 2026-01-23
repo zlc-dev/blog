@@ -7,7 +7,8 @@ import icon from 'astro-icon';
 import { SITE_CONFIG } from './src/site_config.ts';
 
 import mdx from "@astrojs/mdx";
-import { getRelativePath } from './src/utils.ts';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 const ASTRO_ICON_OPTS = {
   include: {
@@ -31,8 +32,16 @@ export default defineConfig({
       fallbackType: "redirect"
     },
   },
-  integrations: [pagefind(), icon(ASTRO_ICON_OPTS), mdx()],
+  markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
+  },
+  integrations: [
+    pagefind(), 
+    icon(ASTRO_ICON_OPTS), 
+    mdx()
+  ],
   experimental: {
     contentIntellisense: true,
-  }
+  },
 });
